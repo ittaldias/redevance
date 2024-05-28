@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/17AO5Cti7b5rfTya55xRV9CmIWCcdonlo
 """
 
-from creation_fusion import comparaison_data, differences_vols, retrouver_vol, comparaison_vol, difference_time
+from src.creation_fusion import comparaison_data, differences_vols, retrouver_vol, comparaison_vol, difference_time
 import pandas as pd
 import time
 from datetime import datetime
