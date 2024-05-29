@@ -18,6 +18,7 @@ import time
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+import google
 
 """## Importation données
 
