@@ -18,7 +18,6 @@ import time
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-import google
 
 """## Importation données
 
@@ -243,8 +242,5 @@ def telecharger(data_result):
   # Enregistrer le DataFrame au format CSV
   dataresult.to_csv('resultatfusion.txt', sep='\t', index=False)  # Utilisez l'extension .txt pour le nom du fichier
 
-  # Télécharger le fichier
-  from google.colab import files
-  files.download('resultatfusion.txt')
-
+ 
 telecharger(dataresult)
