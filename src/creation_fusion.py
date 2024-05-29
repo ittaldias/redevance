@@ -193,7 +193,7 @@ def comparaison_data(data1, data2, fichier_date1, fichier_date2):
         # Réinitialiser l'index pour obtenir une seule ligne
         newligne.reset_index(drop=True, inplace=True)
 
-        vols_differents.loc[index_différents] = newligne.iloc[0]
+        vols_differents.loc[index_differents] = newligne.iloc[0]
 
         index_differents+=1
 
