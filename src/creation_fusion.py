@@ -69,7 +69,7 @@ def importation(nom1, nom2):
   date_fichier2 = date[4:]  + date[2:4] + date[:2]
   return data_DTI, data_CESNAC, date_fichier1, date_fichier2
 
-data_DTI, data_CESNAC, fichier_date1, fichier_date2 = importation("M-LF-20230522-DTI.txt", "M-LF-20230601-090935-001-CESNAC.txt")
+data_DTI, data_CESNAC, fichier_date1, fichier_date2 = importation("data/M-LF-20230522-DTI.txt", "M-LF-20230601-090935-001-CESNAC.txt")
 
 """# Algorithme de comparaison
 
