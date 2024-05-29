@@ -3,4 +3,3 @@ datetime
 numpy
 pytest
 matplotlib
-google-api-python-client
