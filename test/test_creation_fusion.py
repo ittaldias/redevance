@@ -105,8 +105,21 @@ data = {
 data_test_result = pd.DataFrame(data)
 
 # Définir les types de données basés sur df1
+# Types de données que vous avez fournis
 dtypes_df1 = {
-    'compare': 'int64', 'Code_1': 'object', 'Code_2': 'object', 'Time of departure/entry_1': 'object', 'Time of departure/entry_2': 'object', 'Departure aerodrome_1': 'object', 'Departure aerodrome_2': 'object', 'Arrival aerodrome_1': 'object', 'Arrival aerodrome_2': 'object', 'Flight identification_1': 'object', 'Flight identification_2': 'object', 'Main Exemption code_1': 'object', 'Main Exemption code_2': 'object', 'Type of aircraft_1': 'object', 'Type of aircraft_2': 'object', 'Operator_1': 'object', 'Operator_2': 'object', 'Aircraft Registration_1': 'object', 'Aircraft Registration_2': 'object', 'Comment1_1': 'object', 'Comment1_2': 'float64', 'Flight date_1': 'object', 'Flight date_2': 'object', 'IFPLID_1': 'object', 'IFPLID_2': 'object', 'Planned_aerodrome_1': 'object', 'Planned_aerodrome_2': 'float64', 'Charging_zone_overflow_1': 'object', 'Charging_zone_overflow_2': 'float64', 'Entry_point_1': 'object', 'Entry_point_2': 'float64', 'Exit_point_1': 'object', 'Exit_point_2': 'float64', 'Sup_exemption_code_1': 'object', 'Sup_exemption_code_2': 'float64', 'Source of the Aircraft Address_1': 'object', 'Source of the Aircraft Address_2': 'object', '24-bit Aircraft Address_1': 'object', '24-bit Aircraft Address_2': 'object', 'Comment2_1': 'object', 'Comment2_2': 'float64'
+    'compare': 'int64', 'Code_1': 'object', 'Code_2': 'object', 'Time of departure/entry_1': 'object',
+    'Time of departure/entry_2': 'object', 'Departure aerodrome_1': 'object', 'Departure aerodrome_2': 'object',
+    'Arrival aerodrome_1': 'object', 'Arrival aerodrome_2': 'object', 'Flight identification_1': 'object',
+    'Flight identification_2': 'object', 'Main Exemption code_1': 'object', 'Main Exemption code_2': 'object',
+    'Type of aircraft_1': 'object', 'Type of aircraft_2': 'object', 'Operator_1': 'object', 'Operator_2': 'object',
+    'Aircraft Registration_1': 'object', 'Aircraft Registration_2': 'object', 'Comment1_1': 'float64',
+    'Comment1_2': 'float64', 'Flight date_1': 'object', 'Flight date_2': 'object', 'IFPLID_1': 'object',
+    'IFPLID_2': 'object', 'Planned_aerodrome_1': 'float64', 'Planned_aerodrome_2': 'float64',
+    'Charging_zone_overflow_1': 'float64', 'Charging_zone_overflow_2': 'float64', 'Entry_point_1': 'float64',
+    'Entry_point_2': 'float64', 'Exit_point_1': 'float64', 'Exit_point_2': 'float64', 'Sup_exemption_code_1': 'float64',
+    'Sup_exemption_code_2': 'float64', 'Source of the Aircraft Address_1': 'object',
+    'Source of the Aircraft Address_2': 'object', '24-bit Aircraft Address_1': 'object',
+    '24-bit Aircraft Address_2': 'object', 'Comment2_1': 'float64', 'Comment2_2': 'float64'
 }
 
 # Appliquer les types de données au deuxième DataFrame
