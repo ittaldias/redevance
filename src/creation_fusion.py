@@ -157,17 +157,14 @@ def differences_vols(vol1, vol2):
 
 def comparaison_data(data1, data2, fichier_date1, fichier_date2):
   vols_only_data1 = pd.DataFrame(columns=noms_colonnes)
-  index_only_data1 = 0
   vols_only_data2 = data2.copy()
   vols_identiques = pd.DataFrame(columns = noms_colonnes)
   index_identiques = 0
   vols_differents = pd.DataFrame(columns=noms_colonnes_doubles)
-  index_differents = 0
   for i in range(len(data1)):
     vols, index = retrouver_vol(data1.iloc[i], vols_only_data2, fichier_date1, fichier_date2)
     if len(vols)==0:
-      vols_only_data1.loc[index_only_data1] = data1.iloc[i]
-      index_only_data1+=1
+      vols_only_data1 = pd.concat([vols_only_data1, data1.iloc[i:i+1]], ignore_index=True)
     else:
       vols_only_data2 = vols_only_data2.drop(index)
       if differences_vols(data1.iloc[i], vols[0]):
@@ -193,9 +190,7 @@ def comparaison_data(data1, data2, fichier_date1, fichier_date2):
         # Réinitialiser l'index pour obtenir une seule ligne
         newligne.reset_index(drop=True, inplace=True)
 
-        vols_differents.loc[index_differents] = newligne.iloc[0]
-
-        index_differents+=1
+        vols_differents = pd.concat([vols_differents, newligne], ignore_index=True)
 
 
       else:
