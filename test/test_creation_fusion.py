@@ -152,4 +152,5 @@ assert (vols[0].equals(data_test2.iloc[1]) and index == 1), "problème fonction 
 
 """
 
-assert comparaison_data(data_test1, data_test2, 230101, 230101).equals(data_test_result), "problème comparaison_data"
+result = comparaison_data(data_test1, data_test2, 230101, 230101)
+pd.testing.assert_frame_equal(result, data_test_result)
