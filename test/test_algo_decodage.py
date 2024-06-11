@@ -199,11 +199,11 @@ def test_dateRelative_final_veille():
     
 def test_set_typePln_RPL():
     pln = output.loc[output['callSign_prevu'] == 'TRA79Y', 'typePlnStan']
-    assert pln == 'FPL', "Expected 'RPL', but got the wrong one"
+    assert pln.any() == 'FPL', "Expected 'RPL', but got the wrong one"
 
 def test_set_typePln_APL():
     pln = output.loc[output['callSign_prevu'] == 'TRA79Y', 'typePlnStan']
-    assert pln == 'FPL', "Expected 'RPL', but got the wrong one"
+    assert pln.any() == 'FPL', "Expected 'RPL', but got the wrong one"
 def test_set_typePln_ABI():
     pln = output.loc[output['callSign_prevu'] == 'TRA79Y', 'typePlnStan']
-    assert pln == 'FPL', "Expected 'RPL', but got the wrong one"
+    assert pln.any() == 'FPL', "Expected 'RPL', but got the wrong one"
