@@ -19,7 +19,6 @@ def read_and_process_file(fichier_a_deposee):
     complet = 0
     output = pd.DataFrame()
     compteur = 0
-    output = pd.DataFrame()
     tableau_vol = {}
     compteurCcr = 0
 
@@ -35,14 +34,12 @@ def read_and_process_file(fichier_a_deposee):
                     tableau_vol["isPrevu"] = isprevu
                     tableau_vol["isRealise"] = isrealise
                     tableau_vol["isFinal"] = isfinal
-                    # output = pd.concat([output, pd.DataFrame.from_dict(tableau_vol)], ignore_index=True)
                     df_dictionary = pd.DataFrame([tableau_vol])
                     output = pd.concat([output, df_dictionary], ignore_index=True)
                 tableau_vol = {}
                 isprevu = False
                 isrealise = False
                 isfinal = False
-
                 balise = ''
                 hneg = False
                 flag82 = False
@@ -73,7 +70,6 @@ def read_and_process_file(fichier_a_deposee):
                 tableau_vol['typeAvion_' + etat] = words[6]
                 tableau_vol['work_' + etat] = words[7]
                 if words[8][:2] == '??':
-                    # tableau_vol['work1'+etat] = f"{' ' * 9}"
                     pass
                 else:
                     tableau_vol['work1' + etat] = words[8].strip().ljust(9)
@@ -87,28 +83,18 @@ def read_and_process_file(fichier_a_deposee):
                 tableau_vol['typeVol_' + etat] = words[2]
                 tableau_vol['HeurePremiereBaliseActive_' + etat] = words[10]
                 if words[3][:2] == '??':
-                    # tableau_vol['IFPL'+etat] = f"{' ' * 10}"
                     pass
                 else:
                     tableau_vol['IFPL_' + etat] = words[3].strip().ljust(10)
                 tableau_vol['plnActive_' + etat] = words[4]
+                tableau_vol['typePlnStan']= words[6]
                 tableau_vol['plnAnnule_' + etat] = words[5]
                 if '??' in words[7]:
-                    # tableau_vol['date_block'+etat] = f"{' ' * 6}"
                     pass
                 elif len(words[7]) == 8:
                     date_str = words[7]
-
-                    # Convertir la chaîne en un objet datetime
                     date_obj = datetime.strptime(date_str, '%d%m%Y')
-
-                    # Obtenir le numéro du jour dans l'année
                     day_vol = date_obj.timetuple().tm_yday
-                    # if day_vol != date_fichier:
-                    #  print('*********************Attention 22 ebot differend du jour du fichier', vol['id'])
-                    #  prevu = False
-                    #  termine = False
-                    #  final = False
                     tableau_vol['dateBlock_' + etat] = words[7][:4] + words[7][6:]
                 else:
                     tableau_vol['dateBlock_' + etat] = words[7].strip().ljust(6)
@@ -131,7 +117,7 @@ def read_and_process_file(fichier_a_deposee):
             if words[0] == "41":
                 tableau_vol['carte' + etat] = words[1]
             if words[0] == "71":
-                tableau_vol['centreTraversé' + etat] = words[1:]
+                tableau_vol['centreTraversé' + etat] = words[1]
             if words[0] == "72":
                 tableau_vol['listeRangPremier' + etat] = words[1]
             if words[0] == "80":
@@ -214,43 +200,34 @@ def convert_and_calculate(df):
             return None
 
     df['heure_de_reference'] = df.apply(calcul_HeureDeReference, axis=1)
-    return df
     
     def calcul_DateDeReference(row):
         try:
-          if not pd.isna(row['dateRelative_realise']) and not pd.isnull(row['dateRelative_realise']):
-              if row['dateRelative_realise'] == 0:
-                        return date_obj
-              elif row['dateRelative_realise'] == 1:
-                        return date_obj - timedelta(days=1)
-              elif row['dateRelative_realise'] == -1:
-                        return date_obj + timedelta(days=1)
-          elif not pd.isna(row['dateRelative_final']) and not pd.isnull(row['dateRelative_final']):
-              if row['dateRelative_final'] == 0:
-                        return date_obj
-              elif row['dateRelative_final'] == 1:
-                        return date_obj - timedelta(days=1)
-              elif row['dateRelative_final'] == -1:
-                        return date_obj + timedelta(days=1)
-    
+            if not pd.isna(row['dateRelative_realise']) and not pd.isnull(row['dateRelative_realise']):
+                if row['dateRelative_realise'] == 0:
+                    return date_obj
+                elif row['dateRelative_realise'] == 1:
+                    return date_obj - timedelta(days=1)
+                elif row['dateRelative_realise'] == -1:
+                    return date_obj + timedelta(days=1)
+            elif not pd.isna(row['dateRelative_final']) and not pd.isnull(row['dateRelative_final']):
+                if row['dateRelative_final'] == 0:
+                    return date_obj
+                elif row['dateRelative_final'] == 1:
+                    return date_obj - timedelta(days=1)
+                elif row['dateRelative_final'] == -1:
+                    return date_obj + timedelta(days=1)
         except Exception as e:
             return None
-        
+
+    df['date_de_reference'] = df.apply(calcul_DateDeReference, axis=1)
+    return df
+
 def filter_and_analyze(df):
     df_filtre = df.dropna(subset=['heure_de_reference']).copy()
     df_filtre['transmission'] = df_filtre.apply(
         lambda row: 'ABI' if not pd.isna(row['case7']) else ('RPL' if row['typePln'] == 'RPL' else 'AUTRE'), axis=1)
-
+    
     transmissions_count = df_filtre['transmission'].value_counts()
     df_filtre.sort_values(by=['heure_de_reference'], inplace=True)
     return df_filtre, transmissions_count
-
-
-def main():
-    df = read_and_process_file('RDVC-20230522.pln')
-    df = convert_and_calculate(df)
-    df_filtre, transmissions_count = filter_and_analyze(df)
-    visualize_data(transmissions_count)
-
-if __name__ == "__main__":
-    main()
