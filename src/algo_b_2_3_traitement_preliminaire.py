@@ -9,7 +9,7 @@ Original file is located at
 import pandas as pd
 import numpy as np
 
-from src.creation_fusion import INDICATIF_FICTIF, EUROPE_SUD
+from src.creation_tables_systemes import INDICATIF_FICTIF, EUROPE_SUD
 
 
 # Fonction pour convertir un modèle en expression régulière
