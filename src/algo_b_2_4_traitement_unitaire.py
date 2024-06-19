@@ -11,6 +11,21 @@ Original file is located at
 ## Initialisation
 """
 
+def pattern_to_regex(pattern):
+    # Remplacer # par .*, + par [a-zA-Z] et - par [0-9]
+    regex = pattern.replace('#', '.*').replace('+', '[a-zA-Z]').replace('-', '[0-9]')
+    # Ajouter les délimiteurs de début et de fin
+    regex = '^' + regex + '$'
+    return regex
+
+def trouver_pattern(x, pattern_list):
+    for pattern in pattern_list:
+        regex = pattern_to_regex(pattern)
+        if re.match(regex, x):
+            return True
+    return False
+
+
 def TU_init(df_utile):
     df_utile['aeronef_de_moins_de_deux_tonnes'] = False
     df_utile['vol_a_transmettre'] = False
