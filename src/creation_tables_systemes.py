@@ -9,7 +9,7 @@ Original file is located at
 
 import pandas as pd
 
-INDICATIF_FICTIF = pd.read_csv("data/TABLE_SYSTEME/indicatifsfictifs", sep=';', skiprows=4)
+INDICATIF_FICTIF = pd.read_csv("data/TABLE_SYSTEME/indicatifsfictifs", sep=';', skiprows=3)
 EUROPE_SUD = pd.read_csv("data/TABLE_SYSTEME/payssud", sep=';', skiprows=3)
 AERONEFS_DE_MOINS_DE_2_TONNES = pd.read_csv("data/TABLE_SYSTEME/aeronefsmoin2tonnes", sep=';', skiprows=3)
 INDICATEURS_D_EMPLACEMENT_FAUX = pd.read_csv("data/TABLE_SYSTEME/aerodromesfaux", sep=';', skiprows=3)
