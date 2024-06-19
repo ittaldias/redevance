@@ -135,6 +135,7 @@ def test_fonction_retrouver_vols():
 """
 
 def test_fonction_comparaison_data():
+    result = comparaison_data(data_test1, data_test2, 230101, 230101)
     for column in data_test_result.columns:
         data_test_result[column] = data_test_result[column].astype(result[column].dtype)
-    assert comparaison_data(data_test1, data_test2, 230101, 230101).equals(data_test_result), "problème comparaison_data"
+    assert result.equals(data_test_result), "problème comparaison_data"
