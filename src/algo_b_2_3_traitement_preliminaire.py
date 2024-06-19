@@ -40,11 +40,10 @@ def utile_inutile(element):
     def get_valid_value(element, columns):
         for col in columns:
             if col in element:
-                if isinstance(element[col], list):
-                    return element[col]
-                if not pd.isna(element[col]) and element[col] != "":
+                if not element[col].isna():
                     return element[col]
         return None
+
 
     call_sign_value = get_valid_value(element, ["callSign_realise", "callSign_final", "callSign_prevu"])
     PLN_active_value = get_valid_value(element, ["plnActive_realise", "plnActive_final", "plnActive_prevu"])
