@@ -39,16 +39,21 @@ def utile_inutile(element):
     # Fonction pour trouver une valeur valide dans les colonnes multiples
     def get_valid_value(element, columns):
         for col in columns:
-            if col in element:
-                if not element[col].isna():
+            if col in element and not(pd.isna(element[col])):
                     return element[col]
         return None
 
 
+    def get_valid_value_list(element, columns):
+        for col in columns:
+            if col in element and not(pd.isna(element[col]).any()):
+                    return element[col]
+        return None
+
     call_sign_value = get_valid_value(element, ["callSign_realise", "callSign_final", "callSign_prevu"])
     PLN_active_value = get_valid_value(element, ["plnActive_realise", "plnActive_final", "plnActive_prevu"])
     PLN_annule_value = get_valid_value(element, ["plnAnnule_realise", "plnAnnule_final", "plnAnnule_prevu"])
-    centre_traverse_value = get_valid_value(element, ["centreTraversérealise", "centreTraverséfinal", "centreTraverséprevu"])
+    centre_traverse_value = get_valid_value_list(element, ["centreTraversérealise", "centreTraverséfinal", "centreTraverséprevu"])
     dep_value = get_valid_value(element, ["dep_realise", "dep_final", "dep_prevu"])
     arr_value = get_valid_value(element, ["arr_realise", "arr_final", "arr_prevu"])
 
