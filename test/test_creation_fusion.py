@@ -106,7 +106,8 @@ data_test_result = pd.DataFrame(data)
 
 """## Test difference_time"""
 
-assert (difference_time(130, 10, 230202, 230202, 210101, 210101) == 120 and difference_time(800, 800, 210101, 210101, 210101, 210101) == 0
+def test_fonction_diference_time():
+    assert (difference_time(130, 10, 230202, 230202, 210101, 210101) == 120 and difference_time(800, 800, 210101, 210101, 210101, 210101) == 0
         and difference_time(800, 800, 210101, 210101, 210101, 210101) == 0
         and difference_time(1200, 1200, 210101, 210102, 210101, 210101) == 2400
         and difference_time(100, 200, 210101, 210101, 210101, 210101) == 100
@@ -119,21 +120,21 @@ assert (difference_time(130, 10, 230202, 230202, 210101, 210101) == 120 and diff
 
 """## Test différences_vols"""
 
-assert (differences_vols(data_test1.iloc[6], data_test2.iloc[3])
-and not(differences_vols(data_test1.iloc[6], data_test2.iloc[1]))), "problème fonction differences_vols"
+def test_fonction_differences_vols():
+    assert (differences_vols(data_test1.iloc[6], data_test2.iloc[3])
+    and not(differences_vols(data_test1.iloc[6], data_test2.iloc[1]))), "problème fonction differences_vols"
 
 """## test Retrouver_vols"""
 
-vols, index = retrouver_vol(data_test1.iloc[6], data_test2, 230101, 230101)
-assert (vols[0].equals(data_test2.iloc[1]) and index == 1), "problème fonction retrouver_vols"
+def test_fonction_retrouver_vols():
+    vols, index = retrouver_vol(data_test1.iloc[6], data_test2, 230101, 230101)
+    assert (vols[0].equals(data_test2.iloc[1]) and index == 1), "problème fonction retrouver_vols"
 
 """## test comparaison_data
 
 """
 
-result = comparaison_data(data_test1, data_test2, 230101, 230101)
-
-for column in data_test_result.columns:
-    data_test_result[column] = data_test_result[column].astype(result[column].dtype)
-
-pd.testing.assert_frame_equal(result, data_test_result)
+def test_fonction_comparaison_data():
+    for column in data_test_result.columns:
+        data_test_result[column] = data_test_result[column].astype(result[column].dtype)
+    assert comparaison_data(data_test1, data_test2, 230101, 230101).equals(data_test_result), "problème comparaison_data"
