@@ -37,18 +37,18 @@ def nbre_centre_francais(list):
 
 def utile_inutile(element):
     # Fonction pour trouver une valeur valide dans les colonnes multiples
-        def get_valid_value(element, columns):
-            for col in columns:
-                try:
-                    if col in element and not(pd.isna(element[col])):
-                        return element[col]
-                except TypeError:
-                    pass           
-                try:
-                    if col in element and not(pd.isna(element[col].any())):
-                        return element[col]
-                except TypeError:
-                    pass            
+    def get_valid_value(element, columns):
+        for col in columns:
+            try:
+                if col in element and not(pd.isna(element[col])):
+                    return element[col]
+            except TypeError:
+                pass
+            try:
+                if col in element and not(pd.isna(element[col].any())):
+                    return element[col]
+            except TypeError:
+                pass
         return None
 
     call_sign_value = get_valid_value(element, ["callSign_realise", "callSign_final", "callSign_prevu"])
