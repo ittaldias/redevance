@@ -45,7 +45,7 @@ def utile_inutile(element):
             except:
                 pass
             try:
-                if col in element and not(pd.isna(element[col].any())):
+                if col in element and not(pd.isna(element[col]).any()):
                     return element[col]
             except:
                 pass
