@@ -16,7 +16,7 @@ from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 result = read_and_process_file("data/RDVC-20230522.pln")
 result = convert_and_calculate(result)
 result = traitement_utile_inutile(result)
-print( result[result["callSign_prevu"]=="UAL71"])
+
 
 def test_utile_vol_active_non_fictif():
     utilite = result[result["callSign_prevu"]=="TRA79Y"]["utile_inutile"].iloc[0]
