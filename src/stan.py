@@ -117,7 +117,7 @@ def read_and_process_file(fichier_a_deposee):
             if words[0] == "41":
                 tableau_vol['carte' + etat] = words[1]
             if words[0] == "71":
-                tableau_vol['centreTraversé' + etat] = words[1]
+                tableau_vol['centreTraversé' + etat] = words[1:]
             if words[0] == "72":
                 tableau_vol['listeRangPremier' + etat] = words[1]
             if words[0] == "80":
