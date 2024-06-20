@@ -42,12 +42,12 @@ def utile_inutile(element):
             try:
                 if col in element and not(pd.isna(element[col])):
                     return element[col]
-            except TypeError:
+            except:
                 pass
             try:
                 if col in element and not(pd.isna(element[col].any())):
                     return element[col]
-            except TypeError:
+            except:
                 pass
         return None
 
