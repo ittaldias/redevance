@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt
         
     - name: Run print
-      run: python src/test_algo_b_2_3_traitement_preliminaire.py
+      run: python src/test1.py
 
     - name: Run tests
       run: pytest -v test/
