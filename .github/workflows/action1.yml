@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt
         
     - name: Run print
-      run: py -v test/
+      run: python -v test/
 
     - name: Run tests
       run: pytest -v test/
