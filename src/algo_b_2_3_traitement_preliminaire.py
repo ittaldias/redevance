@@ -49,8 +49,8 @@ def utile_inutile(element):
     centre_traverse_value = get_valid_value(element, ["centreTraversérealise", "centreTraverséfinal", "centreTraverséprevu"])
     dep_value = get_valid_value(element, ["dep_realise", "dep_final", "dep_prevu"])
     arr_value = get_valid_value(element, ["arr_realise", "arr_final", "arr_prevu"])
-    print("PLN_active_value")
-    print("centre_traverse_value")
+    print(PLN_active_value)
+    print(centre_traverse_value)
 
     if trouver_pattern(call_sign_value, INDICATIF_FICTIF["Indicatif"].to_list()):
         return "FICT"
