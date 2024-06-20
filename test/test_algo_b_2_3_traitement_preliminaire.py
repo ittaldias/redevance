@@ -31,7 +31,7 @@ def test_inutile_vol_annule():
     assert utilite == "CNL", "utilité diff de CNL"
 
 def test_inutile_vol_centrefr():
-    utilite = result[result["callSign_prevu"]=="UAL71"]["utile_inutile"].iloc[0]
+    utilite = result[result["callSign_prevu"]=="TRA4N"]["utile_inutile"].iloc[0]
     assert utilite == "2SLF", "utilité diff de 2SLF"
 
 def test_inutile_vol_circulaire():
@@ -41,3 +41,11 @@ def test_inutile_vol_circulaire():
 def test_utile_vol_tout_les_test_faux():
     utilite = result[result["callSign_prevu"]=="TOM22B"]["utile_inutile"].iloc[0]
     assert utilite == "UTI", "utilité diff de UTI"
+
+def test_realise_pln_nan():
+    utilite = result[result["callSign_prevu"]=="THY90F"]["utile_inutile"].iloc[0]
+    assert utilite == "CNL", "utilité diff de CNL"
+
+def test_realise_centre_nan():
+    utilite = result[result["callSign_prevu"]=="UAL71"]["utile_inutile"].iloc[0]
+    assert utilite == "2SLF", "utilité diff de 2SLF"
