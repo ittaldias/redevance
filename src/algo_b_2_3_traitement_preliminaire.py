@@ -39,16 +39,8 @@ def utile_inutile(element):
     # Fonction pour trouver une valeur valide dans les colonnes multiples
     def get_valid_value(element, columns):
         for col in columns:
-            try:
-                if col in element and not(pd.isna(element[col])):
-                    return element[col]
-            except:
-                pass
-            try:
-                if col in element and not(pd.isna(element[col]).any()):
-                    return element[col]
-            except:
-                pass
+            if col in element and not(element[[col]].isna().iloc[0]):
+                return element[col]
         return None
 
     call_sign_value = get_valid_value(element, ["callSign_realise", "callSign_final", "callSign_prevu"])
