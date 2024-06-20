@@ -386,16 +386,6 @@ def traitement_unitaire(df_utile):
     df_utile = TU_init(df_utile)
     df_utile = TU_1(df_utile)
     df_utile = TU_2(df_utile)
-    if df_utile["depfinal"][:2] == "LF":
-        df_utile = TU_4(df_utile)
-    else:
-        df_utile = TU_3(df_utile)
-    return df_utile
-
-def traitement_unitaire(df_utile):
-    df_utile = TU_init(df_utile)
-    df_utile = TU_1(df_utile)
-    df_utile = TU_2(df_utile)
 
     def check_depfinal_prefix(row):
         for col in ["deprealise", "depfinal", "depprevu"]:
@@ -406,7 +396,7 @@ def traitement_unitaire(df_utile):
     if df_utile.apply(check_depfinal_prefix, axis=1).any():
         df_utile = TU_4(df_utile)
     else:
-        df_utile = TU_3(df_utile)
+        df_utile = TU_3_bis(df_utile)
 
     df_utile = TU_5(df_utile)
     df_utile = TU_6(df_utile)
