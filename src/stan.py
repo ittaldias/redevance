@@ -141,7 +141,7 @@ def read_and_process_file(fichier_a_deposee):
                             if tableau_vol['case18'] == "RPL":
                                 tableau_vol['typePln'] = "RPL"
                         else:
-                            print(ligne)
+                            #print(ligne)
                             compteur += 1
                     elif "(APL" in parts[0]:
                         tableau_vol['case7'] = parts[1]
