@@ -59,19 +59,19 @@ def TU_init(df_utile):
 def TU_1(df_utile):
     def TU_1_element(x):
         # Vérification de PLN_active
-        for col in ["PLN_activerealise", "PLN_activefinal", "PLN_activeprevu"]:
+        for col in ["plnActive_realise", "plnActive_final", "plnActive_prevu"]:
             if col in x and not pd.isna(x[col]):
                 if x[col] == "0":
                     x['invalidite_TU'] = x.get('invalidite_TU', []) + ["NACT"]
                 break
 
         # Vérification de typeavion
-        for col in ["typeavionrealise", "typeavionfinal", "typeavionprevu"]:
+        for col in ["typeAvion_realise", "typeAvion_final", "typeAvion_prevu"]:
             if col in x and not pd.isna(x[col]):
                 if x[col] == "ZZZZ":
                     x['invalidite_TU'] = x.get('invalidite_TU', []) + ["TYPAV"]
                     x['PLN_valide'] = False
-                if x[col] in AERONEFS_DE_MOINS_DE_2_TONNES:
+                if x[col] in AERONEFS_DE_MOINS_DE_2_TONNES["Type avion"]:
                     x['aeronef_de_moins_de_deux_tonnes'] = True
                 break
         return x
@@ -83,29 +83,29 @@ def TU_1(df_utile):
 def TU_2(df_utile):
     def TU_2_element(x):
         # Vérification des colonnes de départ
-        for col in ["deprealise", "depfinal", "depprevu"]:
+        for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]):
                 if len(x[col]) != 4:
                     x['invalidite_TU'].append("DEPAR1")
                     x['PLN_valide'] = False
-                elif x[col] in INDICATEURS_D_EMPLACEMENT_FAUX:
+                elif trouver_pattern(x[col], INDICATEURS_D_EMPLACEMENT_FAUX["Code terrain"]):
                     x['invalidite_TU'].append("DEPAR2")
                     x['PLN_valide'] = False
-                elif trouver_pattern(x[col], AERODROME_A_VERIFIER):
+                elif trouver_pattern(x[col], AERODROME_A_VERIFIER["Code terrain"]):
                     x['invalidite_TU'].append("DVPAR3")
                     x['PLN_valide'] = False
             break
 
         # Vérification des colonnes d'arrivée
-        for col in ["arrrealise", "arrfinal", "arrprevu"]:
+        for col in ["arr_realise", "arr_final", "arr_prevu"]:
             if col in x and not pd.isna(x[col]):
                 if len(x[col]) != 4:
                     x['invalidite_TU'].append("ARRIV1")
                     x['PLN_valide'] = False
-                elif x[col] in INDICATEURS_D_EMPLACEMENT_FAUX:
+                elif trouver_pattern(x[col], INDICATEURS_D_EMPLACEMENT_FAUX["Code terrain"]):
                     x['invalidite_TU'].append("ARRIV2")
                     x['PLN_valide'] = False
-                elif trouver_pattern(x[col], AERODROME_A_VERIFIER):
+                elif trouver_pattern(x[col], AERODROME_A_VERIFIER["Code terrain"]):
                     x['invalidite_TU'].append("AVRIV3")
                     x['PLN_valide'] = False
             break
@@ -115,13 +115,9 @@ def TU_2(df_utile):
 
 """## Algo 3"""
 
-liste_origin_vol = []
-def trouver_code(x, liste):
-    return "A"
-
 def TU_3_bis(df_utile):
       def TU_3_bis_element(x):
-        for col in ["deprealise", "depfinal", "depprevu"]:
+        for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]) and x[col] != "":
                 dep_value = x[col]
                 break
@@ -141,34 +137,28 @@ def TU_3_bis(df_utile):
     return df_utile
 
 """##  Algo 4"""
-
 def TU_4(df_utile):
     def TU_4_element(x):
         x['vol_a_transmettre'] = True
-
         # Vérification des colonnes de départ pour vol d'approche
-        for col in ["deprealise", "depfinal", "depprevu"]:
+        for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]):
-                if x[col] in AERODROMES_D_APPROCHE:
+                if x[col] in AERODROMES_D_APPROCHE["Code terrain"]:
                     x["vol_approche"] = True
                 break
-
         # Vérification des colonnes d'arrivée pour vol intérieur
-        for col in ["arrrealise", "arrfinal", "arrprevu"]:
+        for col in ["arr_realise", "arr_final", "arr_prevu"]:
             if col in x and not pd.isna(x[col]):
                 if x[col][:2] == "LF":
                     x["vol_interieur"] = True
                 break
-
         # Vérification des colonnes de départ pour vol frontalier
-        for col in ["deprealise", "depfinal", "depprevu"]:
+        for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]):
-                if x[col] in AERODROMES_FRONTALIERS and x["PLN_activefinal"] != 1:
+                if x[col] in AERODROMES_FRONTALIERS["Code terrain"] and x["PLN_activefinal"] != 1:
                     x["vol_frontalier"] = True
                 break
-
         return x
-
     df_utile = df_utile.apply(TU_4_element, axis=1)
     return df_utile
 
