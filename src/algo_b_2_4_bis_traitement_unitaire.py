@@ -166,31 +166,26 @@ def TU_4(df_utile):
 
 def TU_5(df_utile):
     def TU_5_element(x):
-
         # Vérification des colonnes balise et regleVol
         balise_value = None
         regleVol_value = None
         dep_value = None
-
         for col in ["baliserealise", "balisefinal", "baliseprevu"]:
             if col in x and not pd.isna(x[col]) and x[col] != "":
                 balise_value = x[col]
                 break
-
         for col in ["regleVol_realise", "regleVol_final", "regleVol_prevu"]:
             if col in x and not pd.isna(x[col]) and x[col] != "":
                 regleVol_value = x[col]
                 break
-
-        for col in ["deprealise", "depfinal", "depprevu"]:
+        for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]) and x[col] != "":
                 dep_value = x[col]
                 break
-
         # Conditions basées sur les valeurs trouvées
-        if x["typePln"] == "VFR" and balise_value and balise_value.startswith('VFR') and regleVol_value == "V":
+        if x["typePln"] == "VFR" and balise_value.startswith('VFR') and regleVol_value == "V":
             x['vol_a_transmettre'] = False
-        elif x["typePln"] in ["APL", "FPL", "FIH", "FII"] and balise_value and balise_value.startswith('VFR'):
+        elif x["typePln"] in ["APL", "FPL", "FIH", "FII"] and balise_value.startswith('VFR'):
             x['vol_a_transmettre'] = False
             x['vol_VFR'] = True
             x["typePln"] = "VFR"
@@ -204,12 +199,9 @@ def TU_5(df_utile):
                 x["typePln"] = "AFI"
             if not x.get('vol_VFR', False) and any(s.startswith('TRANS') for s in x['invalidite_TU']):
                 x['vol_a_transmettre'] = "ADET"
-
         if x["typePln"] in ["APL", "FPL"] and regleVol_value in ["Y", "Z"] and x.get('vol_a_transmettre', True):
             x["code_d_exoneration"] = "Y"
-
         return x
-
     df_utile = df_utile.apply(TU_5_element, axis=1)
     return df_utile
 
@@ -357,9 +349,8 @@ def TU_7(df_utile):
                     return element[col]
             return None
 
-        PLN_active_value = get_valid_value(x, ["PLN_activerealise", "PLN_activefinal", "PLN_activeprevu"])
+        PLN_active_value = get_valid_value(x, ["plnActive_realise", "plnActive_final", "plnActive_prevu"])
         call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
-        code_exoneration_value = get_valid_value(x, ["code_d_exoneration_realise", "code_d_exoneration_final", "code_d_exoneration_prevu"])
         type_vol_value = get_valid_value(x, ["typeVol_realise", "typeVol_final", "typeVol_prevu"])
 
         if PLN_active_value == "0" and x.get('vol_a_transmettre', False):
