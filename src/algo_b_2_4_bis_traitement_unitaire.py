@@ -205,48 +205,68 @@ def TU_5(df_utile):
     df_utile = df_utile.apply(TU_5_element, axis=1)
     return df_utile
 
-"""## Algo 6"""
+## Algo 6
 
 def TU_65_element(x):
-    if x['typeAvion_prevu'] in AERONEFS_STRICTEMENT_MILITAIRES['typeAvion'].tolist():
+    # Fonction pour trouver une valeur valide dans les colonnes multiples
+    def get_valid_value(element, columns):
+        for col in columns:
+            if col in element and not pd.isna(element[col]) and element[col] != "":
+                return element[col]
+        return None
+    type_avion_value = get_valid_value(x, ["typeAvion_realise", "typeAvion_final", "typeAvion_prevu"])
+    if type_avion_value in AERONEFS_STRICTEMENT_MILITAIRES['Type avion'].tolist():
         x['type_d_avion_militaire'] = True
         x['PLN_valide'] = False
-        x['invalidite_TU'].append("TYPA19")
-        x['invalidite_TU'].append("INDI19")
-        if not(pd.isna(AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["Code exoneration"].iloc[0])):
-            x["code_d_exoneration"] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["Code exoneration"].iloc[0]
-            x['code_exploitant'] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["Code exploitant 	"].iloc[0]
+        x['invalidite_TU'].extend(["TYPA19", "INDI19"])
+        filtre_avion = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == type_avion_value]
+        if not pd.isna(filtre_avion["Code exoneration"].iloc[0]):
+            x["code_d_exoneration"] = filtre_avion["Code exoneration"].iloc[0]
+            x['code_exploitant'] = filtre_avion["Code exploitant"].iloc[0]
         else:
             x['code_exploitant'] = 'Z'
     return x
 
 def TU_64_element(x):
+    # Fonction pour trouver une valeur valide dans les colonnes multiples
+    def get_valid_value(element, columns):
+        for col in columns:
+            if col in element and not pd.isna(element[col]) and element[col] != "":
+                return element[col]
+        return None
+    type_avion_value = get_valid_value(x, ["typeAvion_realise", "typeAvion_final", "typeAvion_prevu"])
+    OPR = None
     if not(pd.isna(x["case18"])):
         OPR = trouver_case18("OPR/", x["case18"])
     if not(pd.isna(x["case18"])) and OPR != "NULL" and OPR in OPERATEURS_MILITAIRES['Nom operateur'].tolist():
-        x["code_d_exoneration"] = OPERATEURS_MILITAIRES[OPERATEURS_MILITAIRES["Nom operateur"] == OPR]["Code exoneration"].iloc[0]
-        x['code_exploitant'] = OPERATEURS_MILITAIRES[OPERATEURS_MILITAIRES["Nom operateur"] == OPR]["Code exploitant 	"].iloc[0]
+        operateur_militaire = OPERATEURS_MILITAIRES[OPERATEURS_MILITAIRES["Nom operateur"] == OPR]
+        x["code_d_exoneration"] = operateur_militaire["Code exoneration"].iloc[0]
+        x['code_exploitant'] = operateur_militaire["Code exploitant"].iloc[0]
     else:
-        if x['typeAvion_prevu'] in AERONEFS_STRICTEMENT_MILITAIRES['Type avion'].tolist():
+        if type_avion_value in AERONEFS_STRICTEMENT_MILITAIRES['Type avion'].tolist():
             x['type_d_avion_militaire'] = True
-            if not(pd.isna(AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == x["typeAvion_prevu"]]["Code exoneration"].iloc[0])):
-                x["code_d_exoneration"] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == x["typeAvion_prevu"]]["Code exoneration"].iloc[0]
-                x['code_exploitant'] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == x["typeAvion_prevu"]]["Code exploitant"].iloc[0]
+            avion_militaire = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == type_avion_value]
+            if not pd.isna(avion_militaire["Code exoneration"].iloc[0]):
+                x["code_d_exoneration"] = avion_militaire["Code exoneration"].iloc[0]
+                x['code_exploitant'] = avion_militaire["Code exploitant"].iloc[0]
             else:
                 x['code_exploitant'] = 'Z'
         x['PLN_valide'] = False
-        x['invalidite_TU'].append("EXO19")
-        x['invalidite_TU'].append("INDI19")
-        x['invalidite_TU'].append("OPR19")
+        x['invalidite_TU'].extend(["EXO19", "INDI19", "OPR19"])
     return x
 
 def TU_63_element(x):
-    if trouver_pattern(x["callSign_prevu"], IMATRICULATION_CORRECTE):
-        if trouver_pattern(x["callSign_prevu"], IMMATRICULATION_A_VERIFIER):
+    # Fonction pour trouver une valeur valide dans les colonnes multiples
+    def get_valid_value(element, columns):
+        for col in columns:
+            if col in element and not pd.isna(element[col]) and element[col] != "":
+                return element[col]
+        return None
+    call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
+    if call_sign_value and trouver_pattern(call_sign_value, IMATRICULATION_CORRECTE["Immatriculation"]):
+        if trouver_pattern(call_sign_value, IMMATRICULATION_A_VERIFIER["Immatriculation"]):
             x['PLN_valide'] = False
-            x['invalidite_TU'].append("IVDIC$")
-            x['invalidite_TU'].append("EXO$")
-            x['invalidite_TU'].append("OPR$")
+            x['invalidite_TU'].extend(["IVDIC$", "EXO$", "OPR$"])
         else:
             x['type_d_indicatif'] = "IM"
         x = TU_65_element(x)
@@ -255,33 +275,51 @@ def TU_63_element(x):
     return x
 
 def TU_62_element(x):
-    x['code_exploitant'] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"] == x["callSign_prevu"][:2]]["Code exploitant"].iloc[0]
-    if x['vol_interieur'] == True:
-        x["code_d_exoneration"] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"] == x["callSign_prevu"][:2]]["Code exoneration"].iloc[0]
-        x['compagnie_française'] = True
-        x['type_d_indicatif'] = "BI"
-    else:
-        x['PLN_valide'] = False
-        x['invalidite_TU'].append("INDIC%")
-        x['invalidite_TU'].append("EXO%")
-        x['invalidite_TU'].append("OPR%")
-    x = TU_65_element(x)
+    def get_valid_value(element, columns):
+        for col in columns:
+            if col in element and not pd.isna(element[col]) and element[col] != "":
+                return element[col]
+        return None
+    call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
+    if call_sign_value and call_sign_value[:2] in COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"].values:
+        x['code_exploitant'] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"] == call_sign_value[:2]]["Code exploitant"].iloc[0]
+        if x['vol_interieur'] == True:
+            x["code_d_exoneration"] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"] == call_sign_value[:2]]["Code exoneration"].iloc[0]
+            x['compagnie_française'] = True
+            x['type_d_indicatif'] = "BI"
+        else:
+            x['PLN_valide'] = False
+            x['invalidite_TU'].extend(["INDIC%", "EXO%", "OPR%"])
+        x = TU_65_element(x)
     return x
 
 def TU_612_element(x):
-    if re.search( r'\d[A-Z]$', x["callSign_prevu"]) and x["callSign_prevu"][-1] == -1:
+    def get_valid_value(element, columns):
+        for col in columns:
+            if col in element and not pd.isna(element[col]) and element[col] != "":
+                return element[col]
+        return None
+
+    call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
+
+    if call_sign_value and re.search(r'\d[A-Z]$', call_sign_value) and call_sign_value[-1] == -1:
         x['PLN_valide'] = False
         x['invalidite_TU'].append("INDIC6")
     x = TU_65_element(x)
     return x
 
 def TU_611_element(x):
-    if x["callSign_prevu"][-1] in LETTRES_AIR_FRANCE['Indicatif'].tolist():
-        code_air_france = LETTRES_AIR_FRANCE[LETTRES_AIR_FRANCE['Indicatif'] == x["callSign_prevu"][-1]]["Indicatif"].iloc[0]
+    def get_valid_value(element, columns):
+        for col in columns:
+            if col in element and not pd.isna(element[col]) and element[col] != "":
+                return element[col]
+        return None
+    call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
+    if call_sign_value and call_sign_value[-1] in LETTRES_AIR_FRANCE['Indicatif'].tolist():
+        code_air_france = LETTRES_AIR_FRANCE[LETTRES_AIR_FRANCE['Indicatif'] == call_sign_value[-1]]["Indicatif"].iloc[0]
         if code_air_france == 2:
             x['PLN_valide'] = False
-            x['invalidite_TU'].append("INDIC8")
-            x['invalidite_TU'].append("EXO8")
+            x['invalidite_TU'].extend(["INDIC8", "EXO8"])
         elif not code_air_france.isdigit():
             x["code_d_exoneration"] = code_air_france
     else:
@@ -291,15 +329,20 @@ def TU_611_element(x):
     return x
 
 def TU_61_element(x):
-    if x["callSign_prevu"][:3] in COMPAGNIES_AVEC_TRIGRAMME:
+    def get_valid_value(element, columns):
+        for col in columns:
+            if col in element and not pd.isna(element[col]) and element[col] != "":
+                return element[col]
+        return None
+    call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
+    if call_sign_value and call_sign_value[:3] in COMPAGNIES_AVEC_TRIGRAMME["Trigramme"].tolist():
         x['type_d_indicatif'] = "TR"
-        if trouver_pattern(x["callSign_prevu"], INDICATIFS_TRIGRAMME_A_VERIFIER):
+        if trouver_pattern(call_sign_value, INDICATIFS_TRIGRAMME_A_VERIFIER["Indicatif"]):
             x['PLN_valide'] = False
-            x['invalidite_TU'].append("IVDIC5")
-            x['invalidite_TU'].append("EXO5")
-        elif x["callSign_prevu"][:3] == "AFR":
+            x['invalidite_TU'].extend(["IVDIC5", "EXO5"])
+        elif call_sign_value[:3] == "AFR":
             x['compagnie_française'] = True
-            if re.search( r'\d[A-Z]$', x["callSign_prevu"]):
+            if re.search(r'\d[A-Z]$', call_sign_value):
                 x = TU_611_element(x)
             else:
                 x = TU_65_element(x)
@@ -311,16 +354,22 @@ def TU_61_element(x):
 
 def TU_6(df_utile):
     def TU_6_element(x):
-        if trouver_pattern(x["callSign_prevu"], INDICATIF_A_CODE_AUTO["Indicatif"].tolist()):
-            Indicatif = renvoie_pattern(x["callSign_prevu"], INDICATIF_A_CODE_AUTO["Indicatif"].tolist())
+        def get_valid_value(element, columns):
+            for col in columns:
+                if col in element and not pd.isna(element[col]) and element[col] != "":
+                    return element[col]
+            return None
+        call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
+        if call_sign_value and trouver_pattern(call_sign_value, INDICATIF_A_CODE_AUTO["Indicatif"].tolist()):
+            Indicatif = renvoie_pattern(call_sign_value, INDICATIF_A_CODE_AUTO["Indicatif"].tolist())
             x["code_d_exoneration"] = INDICATIF_A_CODE_AUTO[INDICATIF_A_CODE_AUTO["Indicatif"] == Indicatif]["Code exoneration"].iloc[0]
             x['code_exploitant'] = INDICATIF_A_CODE_AUTO[INDICATIF_A_CODE_AUTO["Indicatif"] == Indicatif]["Code exploitant"].iloc[0]
-            if x["code_d_exoneration"] == "X" or x["code_d_exoneration"] == "M":
+            if x["code_d_exoneration"] in ["X", "M"]:
                 x['type_d_avion_militaire'] = True
         else:
-            if x["callSign_prevu"] in INDICATIFS_A_STRUCTURE_TRIGRAMME_CORRECTE["Indicatif"]:
+            if call_sign_value in INDICATIFS_A_STRUCTURE_TRIGRAMME_CORRECTE["Indicatif"].tolist():
                 x = TU_61_element(x)
-            elif re.match( r'^[A-Z]{2}\d{3}[A-Z]{2}$', x["callSign_prevu"]) and x["callSign_prevu"][:2] in COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"].tolist():
+            elif re.match(r'^[A-Z]{2}\d{3}[A-Z]{2}$', call_sign_value) and call_sign_value[:2] in COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"].tolist():
                 x = TU_62_element(x)
             else:
                 x = TU_63_element(x)
