@@ -26,6 +26,12 @@ def trouver_pattern(x, pattern_list):
             return True
     return False
 
+def renvoie_pattern(x, pattern_list):
+    for pattern in pattern_list:
+        regex = pattern_to_regex(pattern)
+        if re.match(regex, x):
+            return pattern
+    return "NULL"
 
 def TU_init(df_utile):
     df_utile['aeronef_de_moins_de_deux_tonnes'] = False
@@ -222,29 +228,32 @@ def TU_65_element(x):
         x['PLN_valide'] = False
         x['invalidite_TU'].append("TYPA19")
         x['invalidite_TU'].append("INDI19")
-        if not(pd.isna(AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["CODE_EXONERATION"].iloc[0])):
-            x["code_d_exoneration"] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["CODE_EXONERATION"].iloc[0]
-            x['code_exploitant'] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["CODE_EXPLOITANT"].iloc[0]
+        if not(pd.isna(AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["Code exoneration"].iloc[0])):
+            x["code_d_exoneration"] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["Code exoneration"].iloc[0]
+            x['code_exploitant'] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["Code exploitant 	"].iloc[0]
         else:
             x['code_exploitant'] = 'Z'
+    return x
 
 def TU_64_element(x):
-    OPR = trouver_case18("OPR/", x["case18"])
-    if not(pd.isna(OPR)) and x['OPR'] in OPERATEURS_MILITAIRES['OPR'].tolist():
-        x["code_d_exoneration"] = OPERATEURS_MILITAIRES[OPERATEURS_MILITAIRES["OPR"] == OPR]["CODE_EXONERATION"].iloc[0]
-        x['code_exploitant'] = OPERATEURS_MILITAIRES[OPERATEURS_MILITAIRES["OPR"] == OPR]["CODE_EXPLOITANT"].iloc[0]
+    if not(pd.isna(x["case18"])):
+        OPR = trouver_case18("OPR/", x["case18"])
+    if not(pd.isna(x["case18"])) and OPR != "NULL" and OPR in OPERATEURS_MILITAIRES['Nom operateur'].tolist():
+        x["code_d_exoneration"] = OPERATEURS_MILITAIRES[OPERATEURS_MILITAIRES["Nom operateur"] == OPR]["Code exoneration"].iloc[0]
+        x['code_exploitant'] = OPERATEURS_MILITAIRES[OPERATEURS_MILITAIRES["Nom operateur"] == OPR]["Code exploitant 	"].iloc[0]
     else:
-        if x['typeAvion_prevu'] in AERONEFS_STRICTEMENT_MILITAIRES['typeAvion'].tolist():
+        if x['typeAvion_prevu'] in AERONEFS_STRICTEMENT_MILITAIRES['Type avion'].tolist():
             x['type_d_avion_militaire'] = True
-            if not(pd.isna(AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["CODE_EXONERATION"].iloc[0])):
-                x["code_d_exoneration"] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["CODE_EXONERATION"].iloc[0]
-                x['code_exploitant'] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["typeAvion"] == x["typeAvion"]]["CODE_EXPLOITANT"].iloc[0]
+            if not(pd.isna(AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == x["typeAvion_prevu"]]["Code exoneration"].iloc[0])):
+                x["code_d_exoneration"] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == x["typeAvion_prevu"]]["Code exoneration"].iloc[0]
+                x['code_exploitant'] = AERONEFS_STRICTEMENT_MILITAIRES[AERONEFS_STRICTEMENT_MILITAIRES["Type avion"] == x["typeAvion_prevu"]]["Code exploitant"].iloc[0]
             else:
                 x['code_exploitant'] = 'Z'
         x['PLN_valide'] = False
         x['invalidite_TU'].append("EXO19")
         x['invalidite_TU'].append("INDI19")
         x['invalidite_TU'].append("OPR19")
+    return x
 
 def TU_63_element(x):
     if trouver_pattern(x["callSign_prevu"], IMATRICULATION_CORRECTE):
@@ -255,14 +264,15 @@ def TU_63_element(x):
             x['invalidite_TU'].append("OPR$")
         else:
             x['type_d_indicatif'] = "IM"
-        TU_65_element(x)
+        x = TU_65_element(x)
     else:
-        TU_64_element(x)
+        x = TU_64_element(x)
+    return x
 
 def TU_62_element(x):
-    x['code_exploitant'] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["INDICATIF"] == x["callSign_prevu"][:2]]["CODE_EXPLOITANT"].iloc[0]
+    x['code_exploitant'] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"] == x["callSign_prevu"][:2]]["Code exploitant"].iloc[0]
     if x['vol_interieur'] == True:
-        x["code_d_exoneration"] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["INDICATIF"] == x["callSign_prevu"][:2]]["CODE_EXONERATION"].iloc[0]
+        x["code_d_exoneration"] = COMPAGNIES_BIGRAMMES_ET_SUFFIXES[COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"] == x["callSign_prevu"][:2]]["Code exoneration"].iloc[0]
         x['compagnie_française'] = True
         x['type_d_indicatif'] = "BI"
     else:
@@ -270,17 +280,19 @@ def TU_62_element(x):
         x['invalidite_TU'].append("INDIC%")
         x['invalidite_TU'].append("EXO%")
         x['invalidite_TU'].append("OPR%")
-    TU_65_element(x)
+    x = TU_65_element(x)
+    return x
 
 def TU_612_element(x):
     if re.search( r'\d[A-Z]$', x["callSign_prevu"]) and x["callSign_prevu"][-1] == -1:
         x['PLN_valide'] = False
         x['invalidite_TU'].append("INDIC6")
-    TU_65_element(x)
+    x = TU_65_element(x)
+    return x
 
 def TU_611_element(x):
-    if x["callSign_prevu"][-1] in LETTRES_AIR_FRANCE['INDICATIF'].tolist()
-        code_air_france = LETTRES_AIR_FRANCE[LETTRES_AIR_FRANCE['INDICATIF'] == x["callSign_prevu"][-1]]["INDICATIF"].iloc[0]
+    if x["callSign_prevu"][-1] in LETTRES_AIR_FRANCE['Indicatif'].tolist():
+        code_air_france = LETTRES_AIR_FRANCE[LETTRES_AIR_FRANCE['Indicatif'] == x["callSign_prevu"][-1]]["Indicatif"].iloc[0]
         if code_air_france == 2:
             x['PLN_valide'] = False
             x['invalidite_TU'].append("INDIC8")
@@ -290,7 +302,8 @@ def TU_611_element(x):
     else:
         x['PLN_valide'] = False
         x['invalidite_TU'].append("EXO10")
-    TU_65_element(x)
+    x = TU_65_element(x)
+    return x
 
 def TU_61_element(x):
     if x["callSign_prevu"][:3] in COMPAGNIES_AVEC_TRIGRAMME:
@@ -302,52 +315,52 @@ def TU_61_element(x):
         elif x["callSign_prevu"][:3] == "AFR":
             x['compagnie_française'] = True
             if re.search( r'\d[A-Z]$', x["callSign_prevu"]):
-                TU_611_element(x)
+                x = TU_611_element(x)
             else:
-                TU_65_element(x)
+                x = TU_65_element(x)
         else:
-            TU_612_element(x)
+            x = TU_612_element(x)
     else:
-        TU_64_element(x)
-
-def TU_62_element(x):
-    a=0
-
-def TU_63_element(x):
-    a = 0
+        x = TU_64_element(x)
+    return x
 
 def TU_6(df_utile):
     def TU_6_element(x):
-        if trouver_pattern(x["callSign_prevu"], INDICATIF_A_CODE_AUTO["INDICATIF"].tolist()):
-            x["code_d_exoneration"] = INDICATIF_A_CODE_AUTO[INDICATIF_A_CODE_AUTO["INDICATIF"] == x["callSign_prevu"]]["CODE_EXONERATION"].iloc[0]
-            x['code_exploitant'] = INDICATIF_A_CODE_AUTO[INDICATIF_A_CODE_AUTO["INDICATIF"] == x["callSign_prevu"]]["CODE_EXPLOITANT"].iloc[0]
+        if trouver_pattern(x["callSign_prevu"], INDICATIF_A_CODE_AUTO["Indicatif"].tolist()):
+            Indicatif = renvoie_pattern(x["callSign_prevu"], INDICATIF_A_CODE_AUTO["Indicatif"].tolist())
+            x["code_d_exoneration"] = INDICATIF_A_CODE_AUTO[INDICATIF_A_CODE_AUTO["Indicatif"] == Indicatif]["Code exoneration"].iloc[0]
+            x['code_exploitant'] = INDICATIF_A_CODE_AUTO[INDICATIF_A_CODE_AUTO["Indicatif"] == Indicatif]["Code exploitant"].iloc[0]
             if x["code_d_exoneration"] == "X" or x["code_d_exoneration"] == "M":
                 x['type_d_avion_militaire'] = True
         else:
-            if x["callSign_prevu"] in INDICATIFS_A_STRUCTURE_TRIGRAMME_CORRECTE:
-                TU_61_element(x)
-            elif re.match( r'^[A-Z]{2}\d{3}[A-Z]{2}$', x["callSign_prevu"]) and x["callSign_prevu"][:2] in COMPAGNIES_BIGRAMMES_ET_SUFFIXES["INDICATIF"].tolist():
-                TU_62_element(x)
+            if x["callSign_prevu"] in INDICATIFS_A_STRUCTURE_TRIGRAMME_CORRECTE["Indicatif"]:
+                x = TU_61_element(x)
+            elif re.match( r'^[A-Z]{2}\d{3}[A-Z]{2}$', x["callSign_prevu"]) and x["callSign_prevu"][:2] in COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"].tolist():
+                x = TU_62_element(x)
             else:
-                TU_63_element(x)
+                x = TU_63_element(x)
+        return x
     df_utile = df_utile.apply(TU_6_element, axis=1)
     return df_utile
 
 """## Algo 7"""
 
-# Chaîne d'entrée
 def trouver_case18(prefix, input_string):
-    start_index = input_string.find(prefix) + len(prefix)
-    end_index = input_string.find(' ', start_index)
-    opr_code = input_string[start_index:end_index]
-    return opr_code
+    index_find = input_string.find(prefix)
+    if index_find == -1:
+        return "NULL"
+    else:
+        start_index = index_find + len(prefix)
+        end_index = input_string.find(' ', start_index)
+        opr_code = input_string[start_index:end_index]
+        return opr_code
 
 def TU_7(df_utile):
     def TU_7_element(x):
         # Fonction pour trouver une valeur valide dans les colonnes multiples
         def get_valid_value(element, columns):
             for col in columns:
-                if col in element and not pd.isna(element[col]) and element[col] != "":
+                if col in element and not(element[[col]].isna().iloc[0]):
                     return element[col]
             return None
 
@@ -374,9 +387,7 @@ def TU_7(df_utile):
             else:
                 if trouver_case18("RMK/", x["case18"]) == "TRAINING" and x.get('vol_interieur', False) and code_exoneration_value in ["Y", "Z"]:
                     x["code_d_exoneration"] = "T"
-
         return x
-
     df_utile = df_utile.apply(TU_7_element, axis=1)
     return df_utile
 
@@ -397,9 +408,7 @@ def traitement_unitaire(df_utile):
         df_utile = TU_4(df_utile)
     else:
         df_utile = TU_3_bis(df_utile)
-
     df_utile = TU_5(df_utile)
     df_utile = TU_6(df_utile)
     df_utile = TU_7(df_utile)
-
     return df_utile
