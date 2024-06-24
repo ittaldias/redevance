@@ -116,12 +116,12 @@ def TU_2(df_utile):
 """## Algo 3"""
 
 def TU_3_bis(df_utile):
-      def TU_3_bis_element(x):
+    def TU_3_bis_element(x):
+        dep_value = None
         for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]) and x[col] != "":
                 dep_value = x[col]
                 break
-
         if dep_value == "ZZZZ":
             x['PLN_valide'] = False
             x['PLN_à_verifier_TU'] = False
@@ -130,7 +130,6 @@ def TU_3_bis(df_utile):
             x['vol_a_transmettre'] = False
         else:
             x['vol_a_transmettre'] = True
-
         return x
 
     df_utile = df_utile.apply(TU_3_bis_element, axis=1)
