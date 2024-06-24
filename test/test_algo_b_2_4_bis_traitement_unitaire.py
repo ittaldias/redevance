@@ -23,3 +23,23 @@ result_utile_traitee = traitement_unitaire(result_utile)
 def test_invalidite_NACT():
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="TOM22B"]["invalidite_TU"].iloc[0]
     assert "NACT" in invalidite, "invalidite sans NACT"
+
+def test_validite_active():
+    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="TRA79Y"]["invalidite_TU"].iloc[0]
+    assert not("NACT" in invalidite), "invalidite avec NACT"
+
+def test_invalidite_TYPAV():
+    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="ANDER01"]["invalidite_TU"].iloc[0]
+    assert "TYPAV" in invalidite, "invalidite sans TYPAV"
+
+def test_aeronefs_moins_de_2_t():
+    aero_2_t = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="N214MW"]["aeronef_de_moins_de_deux_tonnes"].iloc[0]
+    assert aero_2_t, "aero plus de 2 t"
+
+def test_dep_dans_emplacement_faux():
+    invalidite = result_utile_traitee[result_utile_traitee["finaltransaction"]=="EVX04EKC"]["invalidite_TU"].iloc[0]
+    assert "DEPAR2" in invalidite, "invalidite sans DEPAR2"
+
+def test_arr_dans_emplacement_faux():
+    invalidite = result_utile_traitee[result_utile_traitee["finaltransaction"]=="EVX04EKCFWWEKI"]["invalidite_TU"].iloc[0]
+    assert "ARRIV2" in invalidite, "invalidite sans ARRIV2"
