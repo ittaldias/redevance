@@ -17,7 +17,7 @@ from src.creation_tables_systemes import AERONEFS_DE_MOINS_DE_2_TONNES, INDICATE
 # Fonction pour convertir un modèle en expression régulière
 def pattern_to_regex(pattern):
     # Remplacer # par .*, + par [a-zA-Z] et - par [0-9]
-    regex = pattern.replace('#', '.*').replace('+', '[a-zA-Z]').replace('-', '[0-9]')
+    regex = pattern.replace('#', '.*').replace('-', '[0-9]').replace('+', '[a-zA-Z]')
     # Ajouter les délimiteurs de début et de fin
     regex = '^' + regex + '$'
     return regex
@@ -315,8 +315,8 @@ def TU_611_element(x):
                 return element[col]
         return None
     call_sign_value = get_valid_value(x, ["callSign_realise", "callSign_final", "callSign_prevu"])
-    if call_sign_value and call_sign_value[-1] in LETTRES_AIR_FRANCE['Indicatif'].tolist():
-        code_air_france = LETTRES_AIR_FRANCE[LETTRES_AIR_FRANCE['Indicatif'] == call_sign_value[-1]]["Indicatif"].iloc[0]
+    if call_sign_value and call_sign_value[-1] in LETTRES_AIR_FRANCE['Lettre'].tolist():
+        code_air_france = LETTRES_AIR_FRANCE[LETTRES_AIR_FRANCE['Lettre'] == call_sign_value[-1]]["Code exo/trait"].iloc[0]
         if code_air_france == 2:
             x['PLN_valide'] = False
             x['invalidite_TU'].extend(["INDIC8", "EXO8"])
