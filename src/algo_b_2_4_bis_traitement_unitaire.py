@@ -367,7 +367,7 @@ def TU_6(df_utile):
             if x["code_d_exoneration"] in ["X", "M"]:
                 x['type_d_avion_militaire'] = True
         else:
-            if call_sign_value in INDICATIFS_A_STRUCTURE_TRIGRAMME_CORRECTE["Indicatif"].tolist():
+            if trouver_pattern(call_sign_value, INDICATIFS_A_STRUCTURE_TRIGRAMME_CORRECTE["Indicatif"].tolist()):
                 x = TU_61_element(x)
             elif re.match(r'^[A-Z]{2}\d{3}[A-Z]{2}$', call_sign_value) and call_sign_value[:2] in COMPAGNIES_BIGRAMMES_ET_SUFFIXES["Indicatif"].tolist():
                 x = TU_62_element(x)
