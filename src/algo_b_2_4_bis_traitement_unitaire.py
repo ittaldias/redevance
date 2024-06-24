@@ -44,7 +44,7 @@ def TU_init(df_utile):
     df_utile['vol_a_transmettre'] = False
     df_utile['vol_approche'] = False
     df_utile['vol_interieur'] = False
-    df_utile['vol_fronstalier'] = False
+    df_utile['vol_frontalier'] = False
     df_utile['vol_VFR'] = False
     df_utile["code_d_exoneration"] = 'Z'
     df_utile['code_exploitant'] = 'Z'
@@ -427,7 +427,6 @@ def TU_7(df_utile):
     return df_utile
 
 """## Traitement unitaire complet"""
-
 def traitement_unitaire(df_utile):
     df_utile = TU_init(df_utile)
     df_utile = TU_1(df_utile)
@@ -436,13 +435,19 @@ def traitement_unitaire(df_utile):
     def check_depfinal_prefix(row):
         for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in row and not pd.isna(row[col]) and row[col] != "":
-                return row[col][:2] == "LF"
+                if row[col][:2] == "LF":
+                    return True
         return False
 
-    if df_utile.apply(check_depfinal_prefix, axis=1).any():
-        df_utile = TU_4(df_utile)
-    else:
-        df_utile = TU_3_bis(df_utile)
+    def apply_transformations(row):
+        if check_depfinal_prefix(row):
+            return TU_4(pd.DataFrame([row])).iloc[0]
+        else:
+            return TU_3_bis(pd.DataFrame([row])).iloc[0]
+
+    # Appliquer les transformations par ligne
+    df_utile = df_utile.apply(apply_transformations, axis=1)
+
     df_utile = TU_5(df_utile)
     df_utile = TU_6(df_utile)
     df_utile = TU_7(df_utile)
