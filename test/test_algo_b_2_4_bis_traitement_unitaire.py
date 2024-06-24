@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import pytest
 from src.stan import read_and_process_file, convert_and_calculate
+from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
 
 result = read_and_process_file("data/RDVC-20230522.pln")
