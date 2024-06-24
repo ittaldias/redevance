@@ -145,7 +145,7 @@ def TU_4(df_utile):
         # Vérification des colonnes de départ pour vol d'approche
         for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]):
-                if x[col] in AERODROMES_D_APPROCHE["Code terrain"]:
+                if x[col] in AERODROMES_D_APPROCHE["Code terrain"].to_list():
                     x["vol_approche"] = True
                 break
         # Vérification des colonnes d'arrivée pour vol intérieur
@@ -157,7 +157,7 @@ def TU_4(df_utile):
         # Vérification des colonnes de départ pour vol frontalier
         for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in x and not pd.isna(x[col]):
-                if x[col] in AERODROMES_FRONTALIERS["Code terrain"] and x["PLN_activefinal"] != 1:
+                if x[col] in AERODROMES_FRONTALIERS["Code terrain"].to_list() and x["PLN_activefinal"] != 1:
                     x["vol_frontalier"] = True
                 break
         return x
