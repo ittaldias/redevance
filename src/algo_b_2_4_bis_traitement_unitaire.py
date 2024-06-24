@@ -142,24 +142,24 @@ def TU_3_bis(df_utile):
 def TU_4(df_utile):
     def TU_4_element(x):
         x['vol_a_transmettre'] = True
-        # Vérification des colonnes de départ pour vol d'approche
         for col in ["dep_realise", "dep_final", "dep_prevu"]:
-            if col in x and not pd.isna(x[col]):
-                if x[col] in AERODROMES_D_APPROCHE["Code terrain"].to_list():
-                    x["vol_approche"] = True
+            if col in x and not pd.isna(x[col]) and x[col] != "":
+                dep_value = x[col]
                 break
-        # Vérification des colonnes d'arrivée pour vol intérieur
         for col in ["arr_realise", "arr_final", "arr_prevu"]:
-            if col in x and not pd.isna(x[col]):
-                if x[col][:2] == "LF":
-                    x["vol_interieur"] = True
+            if col in x and not pd.isna(x[col]) and x[col] != "":
+                arr_value = x[col]
                 break
-        # Vérification des colonnes de départ pour vol frontalier
-        for col in ["dep_realise", "dep_final", "dep_prevu"]:
-            if col in x and not pd.isna(x[col]):
-                if x[col] in AERODROMES_FRONTALIERS["Code terrain"].to_list() and x["PLN_activefinal"] != 1:
-                    x["vol_frontalier"] = True
+        for col in ["plnActive_realise", "plnActive_final", "plnActive_prevu"]:
+            if col in x and not pd.isna(x[col]) and x[col] != "":
+                plnActive = x[col]
                 break
+        if dep_value in AERODROMES_D_APPROCHE["Code terrain"].to_list():
+            x["vol_approche"] = True
+        if arr_value[:2] == "LF":
+            x["vol_interieur"] = True
+        if dep_value in AERODROMES_FRONTALIERS["Code terrain"].to_list() and plnActive != 1:
+            x["vol_frontalier"] = True
         return x
     df_utile = df_utile.apply(TU_4_element, axis=1)
     return df_utile
