@@ -434,7 +434,7 @@ def traitement_unitaire(df_utile):
     df_utile = TU_2(df_utile)
 
     def check_depfinal_prefix(row):
-        for col in ["deprealise", "depfinal", "depprevu"]:
+        for col in ["dep_realise", "dep_final", "dep_prevu"]:
             if col in row and not pd.isna(row[col]) and row[col] != "":
                 return row[col][:2] == "LF"
         return False
