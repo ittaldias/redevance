@@ -71,7 +71,7 @@ def TU_1(df_utile):
                 if x[col] == "ZZZZ":
                     x['invalidite_TU'] = x.get('invalidite_TU', []) + ["TYPAV"]
                     x['PLN_valide'] = False
-                if x[col] in AERONEFS_DE_MOINS_DE_2_TONNES["Type avion"]:
+                if x[col] in AERONEFS_DE_MOINS_DE_2_TONNES["Type avion"].to_list():
                     x['aeronef_de_moins_de_deux_tonnes'] = True
                 break
         return x
