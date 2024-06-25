@@ -20,7 +20,7 @@ from src.creation_tables_systemes import AERONEFS_DE_MOINS_DE_2_TONNES, INDICATE
 # Fonction pour convertir un modèle en expression régulière
 def pattern_to_regex(pattern):
     # Remplacer # par .*, + par [a-zA-Z] et - par [0-9]
-    regex = pattern.replace('#', '.*').replace('-', '[0-9]').replace('+', '[a-zA-Z]')
+    regex = pattern.replace('#', '.?').replace('-', '[0-9]').replace('+', '[a-zA-Z]')
     # Ajouter les délimiteurs de début et de fin
     regex = '^' + regex + '$'
     return regex
