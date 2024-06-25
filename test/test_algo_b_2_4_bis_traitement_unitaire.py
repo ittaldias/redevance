@@ -43,3 +43,47 @@ def test_dep_dans_emplacement_faux():
 def test_arr_dans_emplacement_faux():
     invalidite = result_utile_traitee[result_utile_traitee["finaltransaction"]=="EVX04EKCFWWEKI"]["invalidite_TU"].iloc[0]
     assert "ARRIV2" in invalidite, "invalidite sans ARRIV2"
+
+def test_depp_fr_a_transmettre():
+    a_transmettre = result_utile_traitee[result_utile_traitee["dep_realise"].str[:2] == "LF"]["vol_a_transmettre"].all()
+    assert a_transmettre, "vol dep fr non a transmettre"
+
+def test_vol_approche():
+    approche = result_utile_traitee[result_utile_traitee["finaltransaction"] == "LRQ267GC"]["vol_approche"].iloc[0]
+    assert approche, "vol approche faux"
+
+def test_vol_interieur():
+    interieur = result_utile_traitee[result_utile_traitee["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
+    assert interieur, "vol_interieur faux"
+
+def test_vol_interieur():
+    interieur = result_utile_traitee[result_utile_traitee["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
+    assert interieur, "vol_interieur faux"
+
+def test_a_transmettre_ALGR():
+    a_transmettre = result_utile_traitee[result_utile_traitee["finaltransaction"] == "BAW58L"]["vol_a_transmettre"]
+    assert a_transmettre, "vol ccrArrival ALGR non a transmettre"
+
+def test_invalidite_TRANS2():
+    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="OONLT"]["invalidite_TU"].iloc[0]
+    assert "TRANS2" in invalidite, "invalidite sans TRANS2"
+
+def test_a_transmettre_ADET():
+    a_transmettre = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="HBVAL"]["vol_a_transmettre"].iloc[0]
+    assert a_transmettre == "ADET", "a_transmettre diff de ADET"
+
+def test_indic_a_code_auto():
+    exploitant = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="IAM3127"]["code_exploitant"].iloc[0]
+    assert exploitant == "017", "code_exploitant faux"
+
+def test_type_avion_militaire():
+    avinon_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="IAM3127"]["type_d_avion_militaire"].iloc[0]
+    assert avinon_militaire, "type_avion_militaire faux"
+
+def test_type_indicatifs_TR():
+    indicatif = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="EZY6488"]["type_d_indicatif"].iloc[0]
+    assert indicatif == "TR", " type_indicatifs dif de TR"
+
+def test_invalidite_IVDIC5_EXO5():
+    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="AIB89LR"]["invalidite_TU"].iloc[0]
+    assert "IVDIC5" in invalidite and "EXO5" in invalidite, "invalidite sans IVDIC5 et EXO5"
