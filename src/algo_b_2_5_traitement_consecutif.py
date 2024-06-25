@@ -11,7 +11,7 @@ def traitement_1(pln_a, pln_b):
                 pln_a['PLN_valide'] = False
                 pln_b['PLN_valide'] = False
                 return "Erreur type d'avion ('TYPVAV1')"
-            elif pln_a['dep_'] == pln_b['dep_'] and pln_a['a_arr'] == pln_b['a_arr']:
+            elif pln_a['dep_prevu'] == pln_b['dep_prevu'] and pln_a['arr_prevu'] == pln_b['arr_prevu']:
                 if pln_a['exoneration_code'] != pln_b['exoneration_code'] and pln_b['typePlnRDVC_'] == "RPL" and "French" in pln_a['company']:
                     pln_a['PLN_valide'] = False
                     pln_b['PLN_valide'] = False
@@ -44,8 +44,8 @@ def traitement_consecutifs(pln_a, pln_b):
             traitement_2(pln_a, pln_b)
 
 # Example Usage
-pln_a = {'callsignprevu': 'AFR123', 'dep_': 'CDG', 'a_arr': 'JFK', 'PLN_valide': True, 'plnActive_': True, 'vol_a_transmettre': 'VRAI', 'action': 'A'}
-pln_b = {'callsignprevu': 'AFR124', 'dep_': 'CDG', 'a_arr': 'LAX', 'PLN_valide': True, 'plnActive_': False, 'vol_a_transmettre': 'VRAI', 'action': 'B'}
+pln_a = {'callsignprevu': 'AFR123', 'dep_prevu': 'CDG', 'arr_prevu': 'JFK', 'PLN_valide': True, 'plnActive_': True, 'vol_a_transmettre': 'VRAI', 'action': 'A'}
+pln_b = {'callsignprevu': 'AFR124', 'dep_prevu': 'CDG', 'arr_prevu': 'LAX', 'PLN_valide': True, 'plnActive_': False, 'vol_a_transmettre': 'VRAI', 'action': 'B'}
 traitement_consecutifs(pln_a, pln_b)
 
 # Defining other treatments based on the visual flow charts and descriptions provided
@@ -75,25 +75,25 @@ def traitement_7(pln):
     return f"PLN valid status recalculated: {pln['PLN_valide']}"
 
 def traitement_11(pln_a, pln_b):
-    if pln_b['dep_'] == pln_a['dep_']:
-        if pln_a['a_arr'] == 'France':
+    if pln_b['dep_prevu'] == pln_a['dep_prevu']:
+        if pln_a['arr_prevu'] == 'France':
             pln_b['PLN_valide'] = False
             pln_a['PLN_valide'] = False
             return "Erreur sequence 'SEQ01E'"
         else:
-            if pln_b['a_arr'] == pln_a['a_arr']:
+            if pln_b['arr_prevu'] == pln_a['arr_prevu']:
                 if (pln_a['plnActive_'] or pln_a['action'] in ['A', 'O']) and (pln_b['sequence_error'] == "SEQ01F"):
                     return traitement_specifique(pln_a, pln_b)
                 elif (pln_b['plnActive_'] or pln_b['action'] in ['A', 'O']) and (pln_a['sequence_error'] == "SEQ01F"):
                     return traitement_specifique(pln_a, pln_b)
-                if pln_a['if dep_'] == pln_a['arr_']:
+                if pln_a['if dep_prevu'] == pln_a['arr_prevu']:
                     pln_b['PLN_valide'] = False
                     pln_a['PLN_valide'] = False
                     return "Erreur sequence 'SEQ01F'"
             else:
                 return "No action needed"
     else:
-        if pln_b['a_arr'] == pln_a['a_arr']:
+        if pln_b['arr_prevu'] == pln_a['arr_prevu']:
             return traitement_specifique(pln_a, pln_b)
         else:
             return "No action needed"
