@@ -158,7 +158,7 @@ def TU_4(df_utile):
             x["vol_approche"] = True
         if arr_value[:2] == "LF":
             x["vol_interieur"] = True
-        if dep_value in AERODROMES_FRONTALIERS["Code terrain"].to_list() and plnActive != 1:
+        elif dep_value in AERODROMES_FRONTALIERS["Code terrain"].to_list() and plnActive != 1:
             x["vol_frontalier"] = True
         return x
     df_utile = df_utile.apply(TU_4_element, axis=1)
