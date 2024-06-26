@@ -87,3 +87,34 @@ def test_type_indicatifs_TR():
 def test_invalidite_IVDIC5_EXO5():
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="AIB89LR"]["invalidite_TU"].iloc[0]
     assert "IVDIC5" in invalidite and "EXO5" in invalidite, "invalidite sans IVDIC5 et EXO5"
+
+def test_compagnie_francaise():
+    cpg_francaise = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="AFR98ML"]["compagnie_française"].iloc[0]
+    assert cpg_francaise, "compagnie_francaise False"
+
+def test_exoneration_lettre_air_france():
+    exoneration = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "AFR903A"]["code_d_exoneration"].iloc[0]
+    assert exoneration == "Z", "code_exoneration diff de Z"
+
+def test_type_d_indicatif_IM():
+    indic = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "HBJFR"]["type_d_indicatif"].iloc[0]
+    assert indic == "IM", "type_d_indicatif diff d'IM"
+
+def test_type_d_avion_militaire_False_EXO19():
+    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "JNS0729"]["invalidite_TU"].iloc[0]
+    type_d_avion_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "JNS0729"]["type_d_avion_militaire"].iloc[0]
+    assert not(type_d_avion_militaire) and "EXO19" in invalidite, "type_d_avion_militaire True ou invalidite sans EXO19"
+
+def test_type_d_avion_militaire_True_EXO19():
+    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DMON18"]["invalidite_TU"].iloc[0]
+    type_d_avion_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DMON18"]["type_d_avion_militaire"].iloc[0]
+    assert type_d_avion_militaire and "EXO19" in invalidite, "type_d_avion_militaire false ou invalidite sans EXO19"
+
+def test_type_d_avion_militaire_True_TYPA19():
+    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DAMOC"]["invalidite_TU"].iloc[0]
+    type_d_avion_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DAMOC"]["type_d_avion_militaire"].iloc[0]
+    assert type_d_avion_militaire and "TYPA19" in invalidite, "type_d_avion_militaire false ou invalidite sans TYPA19"
+
+def test_code_d_exoneration_T():
+    exoneration = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "NAK083"]["code_d_exoneration"].iloc[0]
+    assert exoneration == "T", "code_d_exoneration diff de T"
