@@ -62,14 +62,17 @@ def test_vol_interieur():
 
 def test_a_transmettre_ALGR():
     a_transmettre = result_utile_traitee[result_utile_traitee["finaltransaction"] == "BAW58L"]["vol_a_transmettre"].iloc[0]
+    print(result_utile_traitee[result_utile_traitee["finaltransaction"] == "BAW58L"])
     assert a_transmettre, "vol ccrArrival ALGR non a transmettre"
 
 def test_invalidite_TRANS2():
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="OONLT"]["invalidite_TU"].iloc[0]
+    print(result_utile_traitee[result_utile_traitee["callSign_prevu"]=="OONLT"])
     assert "TRANS2" in invalidite, "invalidite sans TRANS2"
 
 def test_a_transmettre_ADET():
     a_transmettre = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="HBVAL"]["vol_a_transmettre"].iloc[0]
+    print(result_utile_traitee[result_utile_traitee["callSign_prevu"]=="HBVAL"])
     assert a_transmettre == "ADET", "a_transmettre diff de ADET"
 
 def test_indic_a_code_auto():
