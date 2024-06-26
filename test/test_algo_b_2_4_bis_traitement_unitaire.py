@@ -61,7 +61,7 @@ def test_vol_interieur():
     assert interieur, "vol_interieur faux"
 
 def test_a_transmettre_ALGR():
-    a_transmettre = result_utile_traitee[result_utile_traitee["finaltransaction"] == "BAW58L"]["vol_a_transmettre"]
+    a_transmettre = result_utile_traitee[result_utile_traitee["finaltransaction"] == "BAW58L"]["vol_a_transmettre"].iloc[0]
     assert a_transmettre, "vol ccrArrival ALGR non a transmettre"
 
 def test_invalidite_TRANS2():
