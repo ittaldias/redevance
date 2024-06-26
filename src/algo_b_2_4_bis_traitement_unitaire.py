@@ -130,9 +130,9 @@ def TU_3_bis(df_utile):
             x['PLN_à_verifier_TU'] = False
             x['invalidite_TU'].extend(["DEPAR2", "TRANS1"])
         elif x["ccrArrival"] == "ALGR":
-            x['vol_a_transmettre'] = False
-        else:
             x['vol_a_transmettre'] = True
+        else:
+            x['vol_a_transmettre'] = False
         return x
 
     df_utile = df_utile.apply(TU_3_bis_element, axis=1)
@@ -158,7 +158,7 @@ def TU_4(df_utile):
             x["vol_approche"] = True
         if arr_value[:2] == "LF":
             x["vol_interieur"] = True
-        elif dep_value in AERODROMES_FRONTALIERS["Code terrain"].to_list() and plnActive != 1:
+        elif dep_value in AERODROMES_FRONTALIERS["Code terrain"].to_list() and plnActive == 0:
             x["vol_frontalier"] = True
         return x
     df_utile = df_utile.apply(TU_4_element, axis=1)
