@@ -294,9 +294,4 @@ def traitement_13(pln_a, pln_b):
     else:
         return "No action needed"
 
-def traitement_5(pln):
-    # Specific treatment logic based on PLN type
-    print(f"Applying specific treatment for PLN type {pln['typeAvion_']}")
-
-
 
