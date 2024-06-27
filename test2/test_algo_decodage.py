@@ -208,3 +208,5 @@ def test_set_typePln_ABI():
     pln = output.loc[output['callSign_prevu'] == 'TRA79Y', 'typePlnStan'].values[0]
     assert pln == 'FPL', "Expected 'RPL', but got the wrong one"
 
+def test_creation_csv():
+    result.to_csv('output/final_outputAD.csv', index=False)
