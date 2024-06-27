@@ -7,7 +7,7 @@ def traitement_1(pln_a, pln_b):
     time_diff = abs((pln_b['heure_de_reference'] - pln_a['heure_de_reference']).total_seconds() / 60)
 
     # Appliquer les règles spécifiques si les conditions sont remplies
-    if pln_a['typePlnRDVC'] == "RPL" and pln_b['typePlnRDVC'] == "RPL" and time_diff > 720:
+    if pln_a['typePln'] == "RPL" and pln_b['typePln'] == "RPL" and time_diff > 720:
         if pln_a['vol_a_transmettre'] == 'FAUX' and pln_b['vol_a_transmettre'] == 'FAUX':
             if pln_a['typeAvion_prevu'] != pln_b['typeAvion_prevu'] and pln_a['typeAvion_prevu'] != "ZZZZ" and pln_b['typeAvion_prevu'] != "ZZZZ":
                 pln_a['PLN_valide'] = False
