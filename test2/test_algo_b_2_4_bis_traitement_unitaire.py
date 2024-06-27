@@ -118,3 +118,7 @@ def test_type_d_avion_militaire_True_TYPA19():
 def test_code_d_exoneration_T():
     exoneration = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "NAK083"]["code_d_exoneration"].iloc[0]
     assert exoneration == "T", "code_d_exoneration diff de T"
+
+def test_creation_csv():
+    result.to_csv('output/final_outputBTU.csv', index=False)
+
