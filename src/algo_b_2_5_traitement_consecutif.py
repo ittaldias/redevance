@@ -214,14 +214,16 @@ def traitement_121(pln_a, pln_b):
             if pln_a['typePlnRDVC_'] in ['VFR', 'AFI']:
                 pln_a['PLN_valide'] = False
                 pln_b['PLN_valide'] = False
-                record_error(pln_a, pln_b, 'DB0', final_check=True)
+                pln_a['invalidite_TC'].extend(["DB0", "DB0"])
+                pln_b['invalidite_TC'].extend(["DB0", "DB0"])
             else:
                 traitement_5_pln_a(pln_a)
         elif pln_b['vol_a_transmettre'] == 'FAUX' and pln_b['plnActive_']:
             if pln_b['typePlnRDVC_'] in ['VFR', 'AFI']:
                 pln_a['PLN_valide'] = False
                 pln_b['PLN_valide'] = False
-                record_error(pln_a, pln_b, 'DB0', final_check=True)
+                pln_a['invalidite_TC'].extend(["DB0", "DB0"])
+                pln_b['invalidite_TC'].extend(["DB0", "DB0"])
             else:
                 traitement_5(pln_b)
 
@@ -238,13 +240,6 @@ def traitement_123(pln_a, pln_b):
         pln_a['PLN_valide'] = False
         pln_b['PLN_valide'] = False
         return "Erreur double 'DB0', PLN à vérifier TC = VRAI"
-
-def record_error(pln_a, pln_b, error_code, final_check=False):
-    # Record an error and possibly check final condition
-    pln_a['error'] = error_code
-    pln_b['error'] = error_code
-    if final_check:
-        print("PLN to verify TC = VRAI")
 # Traietments des vols non identiques, doubles 2 vol a transmettre et activés
 def traitement_122(pln_a, pln_b):
     # Calculating time difference based on the updated variable name
