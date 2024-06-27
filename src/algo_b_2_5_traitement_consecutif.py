@@ -46,9 +46,29 @@ def traitement_2(pln_a, pln_b, compagnies_coordonnees):
                 return "Fin du traitement : Aucun intervalle valide trouvé"
             return "Fin du traitement : Les parties numériques ou les caractères ne correspondent pas"
     return "Conditions initiales non remplies"
-from datetime import datetime
-import re
 
+def traitement_21(pln_a, pln_b):
+    # Check if the type of aircrafts are the same
+    if pln_a['typeAvion_'] != pln_b['typeAvion_']:
+        pln_a['PLN_valide'] = False
+        pln_b['PLN_valide'] = False
+        return "Erreur type d'avion ('TYPVAVO')"
+    
+    # Check if REG codes are provided and different
+    elif pln_a.get('REG_code') and pln_b.get('REG_code') and pln_a['REG_code'] != pln_b['REG_code']:
+        # Check if arrival of PLN A matches departure of PLN B
+        if pln_a['a_arr'] == pln_b['dep_']:
+            # Check if any of these locations is in France
+            if pln_a['a_arr'] in ['France'] or pln_b['dep_'] in ['France']:
+                pln_a['PLN_valide'] = False
+                pln_b['PLN_valide'] = False
+                return "Erreur sequence 'SEQ01B'"
+        else:
+            return "No action needed"
+    else:
+        return "Initial conditions not met"
+
+# Example Usage
 # Vérifier et gérer les indicatifs des compagnies françaises
 def traitement_4(pln_a, pln_b, compagnies_francaises):
     """
@@ -153,6 +173,161 @@ def traitement_11(pln_a, pln_b):
             return traitement_specifique(pln_a, pln_b)
         else:
             return "Aucune action nécessaire"
+def traitement_12(pln_a, pln_b):
+    time_diff = abs((pln_b['heure_de_reference'] - pln_a['heure_de_reference']).total_seconds() / 60)
+    
+    if time_diff <= 120:
+        if ((pln_a['typePlnRDVC_'] in ['RPL', 'APL'] and pln_b['typePlnRDVC_'] in ['FII', 'FIH']) or
+            (pln_b['typePlnRDVC_'] in ['RPL', 'APL'] and pln_a['typePlnRDVC_'] in ['FII', 'FIH'])):
+            traitement_specifique(pln_b)
+        elif (pln_a['typePlnRDVC_'] == 'FII' and pln_b['typePlnRDVC_'] == 'FIH') or (pln_b['typePlnRDVC_'] == 'FII' and pln_a['typePlnRDVC_'] == 'FIH'):
+            traitement_specifique(pln_a)
+        elif (pln_a['typePlnRDVC_'] == pln_b['typePlnRDVC_'] and pln_a['typePlnRDVC_'] in ['FII', 'FIH']):
+            traitement_specifique(pln_a)
+        elif ((pln_a['typePlnRDVC_'] == 'ABI' and pln_b['typePlnRDVC_'] in ['FII', 'FIH']) or
+              (pln_b['typePlnRDVC_'] == 'ABI' and pln_a['typePlnRDVC_'] in ['FII', 'FIH'])):
+            traitement_specifique(pln_a)
+        else:
+            traitement_1222()
+    else:
+        traitement_1222()
+
+def traitement_specifique(pln):
+    # Specific treatment logic based on PLN type
+    print(f"Applying specific treatment for PLN type {pln['typePlnRDVC_']}")
+
+def traitement_1222(pln_a, pln_b):
+    if (pln_a['typePlnRDVC_'] in ['RPL', 'APL'] and pln_b['typePlnRDVC_'] in ['RPL', 'APL'] and
+        pln_a['action'] == 'ZE'):
+        traitement_specifique_pln_a(pln_a)
+    elif (pln_a['typePlnRDVC_'] in ['RPL', 'FPL'] and pln_b['typePlnRDVC_'] in ['RPL', 'FPL'] and
+          pln_b['action'] == 'ZE'):
+        traitement_specifique_pln_b(pln_b)
+    elif (pln_a['typePlnRDVC_'] == 'RPL' and pln_b['typePlnRDVC_'] == 'FPL' and
+          abs((pln_b['heure_de_reference'] - pln_a['heure_de_reference']).total_seconds() / 60) <= 90 and
+          pln_a['indicatif'] == 'BI'):
+        traitement_specifique_pln_a(pln_a)
+    elif (pln_a['typePlnRDVC_'] in ['APL', 'FPL'] and pln_b['typePlnRDVC_'] in ['APL', 'FPL'] and
+          abs((pln_b['heure_de_reference'] - pln_a['heure_de_reference']).total_seconds() / 60) <= 50):
+        traitement_specifique_pln_a(pln_a)
+    elif (pln_a['typePlnRDVC_'] in ['APL', 'FPL'] and pln_b['typePlnRDVC_'] == 'RPL' and
+          abs((pln_b['heure_de_reference'] - pln_a['heure_de_reference']).total_seconds() / 60) <= 30 and
+          pln_a['indicatif'] == 'BI' and pln_b['indicatif'] == 'BI'):
+        traitement_specifique_pln_b(pln_b)
+    else:
+        pln_a['PLN_valide'] = False
+        pln_b['PLN_valide'] = False
+        return "Erreur double 'DB0', PLN à vérifier TC = VRAI"
+
+def traitement_121(pln_a, pln_b):
+    if not (pln_a['plnActive_'] or pln_b['plnActive_']):  # Both are not active
+        if pln_a['vol_a_transmettre'] == 'FAUX':
+            traitement_specifique_pln_a(pln_a)
+        else:
+            traitement_specifique_pln_b(pln_b)
+    else:
+        if pln_a['vol_a_transmettre'] == 'FAUX' and pln_a['plnActive_']:
+            if pln_a['typePlnRDVC_'] in ['VFR', 'AFI']:
+                pln_a['PLN_valide'] = False
+                pln_b['PLN_valide'] = False
+                record_error(pln_a, pln_b, 'DB0', final_check=True)
+            else:
+                traitement_specifique_pln_a(pln_a)
+        elif pln_b['vol_a_transmettre'] == 'FAUX' and pln_b['plnActive_']:
+            if pln_b['typePlnRDVC_'] in ['VFR', 'AFI']:
+                pln_a['PLN_valide'] = False
+                pln_b['PLN_valide'] = False
+                record_error(pln_a, pln_b, 'DB0', final_check=True)
+            else:
+                traitement_specifique_pln_b(pln_b)
+
+def traitement_specifique_pln_a(pln):
+    # Specific treatment logic for PLN A
+    pass
+
+def traitement_specifique_pln_b(pln):
+    # Specific treatment logic for PLN B
+    pass
+def traitement_123(pln_a, pln_b):
+    # Determine which PLN is inactive; assume plnActive_ indicates activity status
+    inactive_pln = pln_a if not pln_a['plnActive_'] else pln_b
+
+    if inactive_pln['typeAvion_'] in ['RPL', 'ABI']:
+        traitement_specifique(inactive_pln)
+    elif pln_a['typeAvion_'] == pln_b['typeAvion_'] and pln_a['typeAvion_'] in ['APL', 'FPL']:
+        traitement_specifique(inactive_pln)
+    else:
+        pln_a['PLN_valide'] = False
+        pln_b['PLN_valide'] = False
+        return "Erreur double 'DB0', PLN à vérifier TC = VRAI"
+
+def record_error(pln_a, pln_b, error_code, final_check=False):
+    # Record an error and possibly check final condition
+    pln_a['error'] = error_code
+    pln_b['error'] = error_code
+    if final_check:
+        print("PLN to verify TC = VRAI")
+
+def traitement_122(pln_a, pln_b):
+    # Calculating time difference based on the updated variable name
+    time_diff = abs((pln_b['heure_de_reference'] - pln_a['heure_de_reference']).total_seconds() / 60)
+    
+    # Using 'typeAvion_' as the updated variable name for plane type
+    if time_diff <= 120:
+        if ((pln_a['typeAvion_'] in ['RPL', 'APL', 'FPL'] and pln_b['typeAvion_'] in ['FII', 'FIH', 'ABI']) or
+            (pln_b['typeAvion_'] in ['RPL', 'APL', 'FPL'] and pln_a['typeAvion_'] in ['FII', 'FIH', 'ABI'])):
+            traitement_specifique(pln_b)  # Assuming treatment is for the second PLN as per your example
+        elif (pln_a['typeAvion_'] == 'FII' and pln_b['typeAvion_'] == 'FIH') or (pln_b['typeAvion_'] == 'FII' and pln_a['typeAvion_'] == 'FIH'):
+            traitement_specifique(pln_a)  # Assuming either PLN could be treated; adjust as needed
+        elif (pln_a['typeAvion_'] == pln_b['typeAvion_'] and pln_a['typeAvion_'] in ['FII', 'FIH']):
+            traitement_specifique(pln_a)
+        elif ((pln_a['typeAvion_'] == 'ABI' and pln_b['typeAvion_'] in ['FII', 'FIH']) or
+              (pln_b['typeAvion_'] == 'ABI' and pln_a['typeAvion_'] in ['FII', 'FIH'])):
+            traitement_specifique(pln_a)  # Adjust to whichever PLN needs treatment
+        else:
+            traitement_1222()
+    else:
+        traitement_1222()
+
+def traitement_13(pln_a, pln_b):
+    if pln_a['a_arr'] != pln_b['dep_']:
+        if pln_b['dep_'] == pln_a['dep_']:
+            pln_a['PLN_valide'] = False
+            pln_b['PLN_valide'] = False
+            return "Erreur sequence 'SEQ01B'"
+        elif pln_a['vol_a_transmettre'] == 'VRAI' and pln_b['vol_a_transmettre'] == 'VRAI':
+            if (pln_a['a_arr'] in ['France'] or pln_b['dep_'] in ['France']):
+                pln_a['PLN_valide'] = False
+                pln_b['PLN_valide'] = False
+                return "Erreur sequence 'SEQ01B'"
+            else:
+                if pln_a['a_arr'] == 'France':
+                    if not (pln_b['dep_'] in ['France']):
+                        pln_a['PLN_valide'] = False
+                        pln_b['PLN_valide'] = False
+                        return "Erreur sequence 'SEQ01C'"
+                elif pln_b['dep_'] == 'France':
+                    if not (pln_a['a_arr'] in ['France']):
+                        pln_a['PLN_valide'] = False
+                        pln_b['PLN_valide'] = False
+                        return "Erreur sequence 'SEQ01D'"
+        else:
+            return "No action needed"
+    else:
+        return "No action needed"
+
+def traitement_specifique(pln):
+    # Specific treatment logic based on PLN type
+    print(f"Applying specific treatment for PLN type {pln['typeAvion_']}")
+
+def traitement_1222():
+    # Placeholder for the final treatment logic
+    print("Finalizing identical flight treatment")
+
+# Example Usage
+pln_a = {'typeAvion_': 'RPL', 'heure_de_reference': datetime.strptime('08:00', '%H:%M')}
+pln_b = {'typeAvion_': 'FIH', 'heure_de_reference': datetime.strptime('09:30', '%H:%M')}
+traitement_122(pln_a, pln_b)
 
 # Logique spécifique de traitement, à définir selon les besoins
 def traitement_specifique(pln_a, pln_b):
