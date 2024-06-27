@@ -20,7 +20,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 """## Importation données
-
 Données DTI et CESNAC
 """
 
