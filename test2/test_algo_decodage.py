@@ -210,4 +210,4 @@ def test_set_typePln_ABI():
     assert pln == 'FPL', "Expected 'RPL', but got the wrong one"
 
 def test_creation_csv():
-    result.to_csv('output/final_outputAD.csv', index=False)
+    output.to_csv('output/final_outputAD.csv', index=False)
