@@ -42,22 +42,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Generate and save DataFrame head
+      - name: Generate and save processed data
         run: |
           python -c "
           import pandas as pd
-          from datetime import datetime, timedelta
           from src.stan import read_and_process_file, convert_and_calculate
-          output = read_and_process_file('data/RDVC-20230522.pln')
-          output = convert_and_calculate(output)
-          output.head().to_csv('output/head.csv', index=False)"
+          from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
+          result = read_and_process_file('data/RDVC-20230522.pln')
+          result = convert_and_calculate(result)
+          result = traitement_utile_inutile(result)
+          result.to_csv('output/final_outputTP.csv', index=False)"
         shell: bash
 
-      - name: Upload DataFrame head as an artifact
+      - name: Upload processed data as an artifact
         uses: actions/upload-artifact@v2
         with:
-          name: dataframe-head
-          path: output/head.csv
+          name: processed-data
+          path: output/final_outputTP.csv
 
   traitement_preliminaire:
     runs-on: ubuntu-latest
@@ -66,10 +67,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download DataFrame head from artifact
+      - name: Download processed data
         uses: actions/download-artifact@v2
         with:
-          name: dataframe-head
+          name: processed-data
 
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -81,8 +82,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Display the DataFrame head
-        run: cat head.csv
+      - name: Run tests on processed data
+        run: |
+          python -c "
+          import pandas as pd
+          import pytest
+          result = pd.read_csv('final_outputTP.csv')
+          pytest.main(['-v', '--tb=line', '-m', 'not integration'])"
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
