@@ -28,8 +28,6 @@ jobs:
   lecture_stan:
     runs-on: ubuntu-latest
     needs: build
-    outputs:
-      special_value: ${{ steps.process_data.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -44,18 +42,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Python script and set output
-        id: process_data
+      - name: Generate DataFrame and save its head
         run: |
           python -c "
-          import sys
           import pandas as pd
           from datetime import datetime, timedelta
           from src.stan import read_and_process_file, convert_and_calculate
           output = read_and_process_file('data/RDVC-20230522.pln')
           output = convert_and_calculate(output)
-          output.to_csv('output/result.csv', index=False)
-          print('::set-output name=result::success')"
+          output.head().to_csv('output/head.csv', index=False)"
+
+      - name: Upload DataFrame head as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dataframe-head
+          path: output/head.csv
 
   traitement_preliminaire:
     runs-on: ubuntu-latest
@@ -64,6 +65,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Download DataFrame head from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dataframe-head
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -74,8 +80,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Use the Output from Previous Job
-        run: echo "The output value is ${{ needs.lecture_stan.outputs.special_value }}"
+      - name: Display the DataFrame head
+        run: cat dataframe-head/head.csv
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
