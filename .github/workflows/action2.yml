@@ -42,7 +42,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Print DataFrame head
+      - name: Generate and save DataFrame head
         run: |
           python -c "
           import pandas as pd
@@ -50,7 +50,13 @@ jobs:
           from src.stan import read_and_process_file, convert_and_calculate
           output = read_and_process_file('data/RDVC-20230522.pln')
           output = convert_and_calculate(output)
-          print(output.head())"
+          output.head().to_csv('output/head.csv', index=False)"
+
+      - name: Upload DataFrame head as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dataframe-head
+          path: output/head.csv
 
   traitement_preliminaire:
     runs-on: ubuntu-latest
@@ -58,6 +64,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Download DataFrame head from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dataframe-head
 
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -69,8 +80,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Echo a Placeholder Message
-        run: echo "Review lecture_stan job logs to see the DataFrame head."
+      - name: Display the DataFrame head
+        run: cat dataframe-head/head.csv
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
