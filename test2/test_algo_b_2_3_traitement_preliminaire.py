@@ -13,8 +13,6 @@ import pytest
 from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 
-result = read_and_process_file("data/RDVC-20230522.pln")
-result = convert_and_calculate(result)
 result = traitement_utile_inutile(result)
 
 
