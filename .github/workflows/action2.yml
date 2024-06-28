@@ -105,7 +105,22 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt 
+          pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest -v test2/test_algo_b_2_4_bis_traitement_unitaire.py -s
+      - name: Download processed data
+        uses: actions/download-artifact@v2
+        with:
+          name: processed-data
+
+      - name: Run tests on further processed data
+        run: |
+          python -c "
+          import pandas as pd
+          import pytest
+          from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
+          result = pd.read_csv('final_outputTP.csv')
+          result_utile = result[result['utile_inutile'] == 'UTI'].copy()
+          result_utile_traitee = traitement_unitaire(result_utile)
+          result_utile_traitee.to_csv('output/final_outputBTU.csv', index=False)
+          pytest.main(['-v', '--tb=line'])"
+          cat output/final_outputBTU.csv
