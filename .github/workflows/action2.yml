@@ -2,7 +2,7 @@ name: RDVC application
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
     paths:
       - 'src/**'
       - 'test2/**'
@@ -42,12 +42,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create output directory
-        run: mkdir -p output
-
       - name: Generate and save processed data
         run: |
-          python -c "import pandas as pd; df = pd.DataFrame({'A': [1, 2, 3]}); df.to_csv('output/final_outputTP.csv', index=False)"
+          python -c "
+          import pandas as pd
+          from src.stan import read_and_process_file, convert_and_calculate
+          from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
+          result = read_and_process_file('data/RDVC-20230522.pln')
+          result = convert_and_calculate(result)
+          result = traitement_utile_inutile(result)
+          result.to_csv('output/final_outputTP.csv', index=False)"
         shell: bash
 
       - name: Upload processed data as an artifact
@@ -68,9 +72,6 @@ jobs:
         with:
           name: processed-data
 
-      - name: List downloaded files
-        run: ls -la
-
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -81,12 +82,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verify file path
-        run: ls -la output/
-
       - name: Run tests on processed data
         run: |
-          python -c "import pandas as pd; result = pd.read_csv('output/final_outputTP.csv'); print(result.describe())"
+          python -c "
+          import pandas as pd
+          import pytest
+          pytest.main(['-v', '--tb=line', '-m', 'not integration'])"
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
@@ -95,11 +96,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download final processed data
-        uses: actions/download-artifact@v2
-        with:
-          name: processed-data
-
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -110,22 +106,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run further tests and handle data
+      - name: Download processed data
+        uses: actions/download-artifact@v2
+        with:
+          name: processed-data
+
+      - name: Run tests on further processed data
         run: |
           python -c "
           import pandas as pd
           import pytest
           from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
-          result = pd.read_csv('output/final_outputTP.csv')
           result_utile = result[result['utile_inutile'] == 'UTI'].copy()
           result_utile_traitee = traitement_unitaire(result_utile)
           result_utile_traitee.to_csv('output/final_outputBTU.csv', index=False)
-          pytest.main(['-v', '--tb=line'])
-          cat output/final_outputBTU.csv"
-        shell: bash
-
-      - name: Upload final processed data as an artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: final-output
-          path: output/final_outputBTU.csv
+          pytest.main(['-v', '--tb=line'])"
+          cat output/final_outputBTU.csv
