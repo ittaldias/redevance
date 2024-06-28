@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.x'  # Adjust to your Python version
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     outputs:
-      special_value: ${{ steps.set_value.outputs.result }}  # Job-level output
+      special_value: ${{ steps.process_data.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -44,9 +44,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Generate Value
-        id: set_value
-        run: echo "::set-output name=result::output"  # Set output as 'output'
+      - name: Run Python script and set output
+        id: process_data
+        run: |
+          python -c "
+          import sys
+          import pandas as pd
+          from datetime import datetime, timedelta
+          from src.stan import read_and_process_file, convert_and_calculate
+          output = read_and_process_file('data/RDVC-20230522.pln')
+          output = convert_and_calculate(output)
+          output.to_csv('output/result.csv', index=False)
+          print('::set-output name=result::success')"
 
   traitement_preliminaire:
     runs-on: ubuntu-latest
@@ -66,10 +75,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Use the Output from Previous Job
-        run: echo "The output value is ${{ needs.lecture_stan.outputs.special_value }}"  # Echo the passed output
-
-      - name: Test print using Python
-        run: python -c "print('${{ needs.lecture_stan.outputs.special_value }}')"  # Use Python to print the variable
+        run: echo "The output value is ${{ needs.lecture_stan.outputs.special_value }}"
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
