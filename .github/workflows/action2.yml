@@ -2,7 +2,7 @@ name: RDVC application
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'src/**'
       - 'test2/**'
@@ -60,9 +60,38 @@ jobs:
           name: processed-data
           path: output/final_outputTP.csv
 
-  traitement_preliminaire:
+  # Subsequent jobs will follow here:
+  process_data:
     runs-on: ubuntu-latest
     needs: lecture_stan
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download processed data
+        uses: actions/download-artifact@v2
+        with:
+          name: processed-data
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Further process and save data
+        run: |
+          # Add any further processing commands here
+          cat output/final_outputTP.csv
+
+  # Include other jobs as previously configured (traitement_preliminaire, traitement_pln_utile, etc.)
+  traitement_preliminaire:
+    runs-on: ubuntu-latest
+    needs: process_data
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -97,6 +126,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Download processed data
+        uses: actions/download-artifact@v2
+        with:
+          name: processed-data
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -107,12 +141,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Download processed data
-        uses: actions/download-artifact@v2
-        with:
-          name: processed-data
-
-      - name: Run tests on further processed data
+      - name: Run further tests and handle data
         run: |
           python -c "
           import pandas as pd
@@ -122,5 +151,12 @@ jobs:
           result_utile = result[result['utile_inutile'] == 'UTI'].copy()
           result_utile_traitee = traitement_unitaire(result_utile)
           result_utile_traitee.to_csv('output/final_outputBTU.csv', index=False)
-          pytest.main(['-v', '--tb=line'])"
-          cat output/final_outputBTU.csv
+          pytest.main(['-v', '--tb=line'])
+          cat output/final_outputBTU.csv"
+        shell: bash
+
+      - name: Upload final processed data as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: final-output
+          path: output/final_outputBTU.csv
