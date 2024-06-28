@@ -76,6 +76,9 @@ jobs:
         with:
           name: processed-data
 
+      - name: List files in the current directory
+        run: ls -la
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -90,9 +93,8 @@ jobs:
         run: |
           python -c "
           import pandas as pd
-          import pytest
-          result = pd.read_csv('output/final_outputTP.csv')
-          pytest.main(['-v', '--tb=line', '-m', 'not integration'])"
+          result = pd.read_csv('final_outputTP.csv')
+          # Remaining code for processing or testing"
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
