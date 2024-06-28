@@ -54,6 +54,7 @@ jobs:
           result = read_and_process_file('data/RDVC-20230522.pln')
           result = convert_and_calculate(result)
           result = traitement_utile_inutile(result)
+          result = result.head()
           result.to_csv('output/final_outputTP.csv', index=False)"
         shell: bash
 
