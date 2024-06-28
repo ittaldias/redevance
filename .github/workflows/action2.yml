@@ -69,7 +69,8 @@ jobs:
 
       - name: Use the Output from Previous Job
         run: echo "The output value is ${{ needs.lecture_stan.outputs.special_value }}"  # Use the output from lecture_stan job
-
+      - name: Test print
+        run: print(result.head)
   traitement_pln_utile:
     runs-on: ubuntu-latest
     needs: traitement_preliminaire
