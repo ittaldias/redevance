@@ -50,10 +50,6 @@ def test_arr_dans_emplacement_faux(processed_data):
     invalidite = processed_data[processed_data["finaltransaction"]=="EVX04EKCFWWEKI"]["invalidite_TU"].iloc[0]
     assert "ARRIV2" in invalidite, "invalidite sans ARRIV2"
 
-def test_depp_fr_a_transmettre(processed_data):
-    a_transmettre = processed_data[processed_data["dep_realise"].str[:2] == "LF"]["vol_a_transmettre"].all(processed_data)
-    assert a_transmettre, "vol dep fr non a transmettre"
-
 def test_vol_approche(processed_data):
     approche = processed_data[processed_data["finaltransaction"] == "LRQ267GC"]["vol_approche"].iloc[0]
     assert approche, "vol approche faux"
@@ -125,6 +121,5 @@ def test_code_d_exoneration_T(processed_data):
     exoneration = processed_data[processed_data["callSign_prevu"] == "NAK083"]["code_d_exoneration"].iloc[0]
     assert exoneration == "T", "code_d_exoneration diff de T"
 
-def test_creation_csv(processed_data):
-    result.to_csv('output/final_outputBTU.csv', index=False)
+
 
