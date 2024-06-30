@@ -76,7 +76,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+      
+      - name: Generate and save processed data
+        run: |
+          python -c "
+          import pandas as pd
+          from src.stan import read_and_process_file, convert_and_calculate
+          from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
+          result = read_and_process_file('data/RDVC-20230522.pln')
+          result = convert_and_calculate(result)
+          result = traitement_utile_inutile(result)
+        shell: bash
+        
       - name: Download processed data
         uses: actions/download-artifact@v2
         with:
@@ -101,6 +112,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt 
-
+      
+      - name: Generate and save processed data
+        run: |
+          python -c "
+          import pandas as pd
+          from src.stan import read_and_process_file, convert_and_calculate
+          from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
+          result = read_and_process_file('data/RDVC-20230522.pln')
+          result = convert_and_calculate(result)
+          result = traitement_utile_inutile(result)
+          result.to_csv('output/final_outputTP.csv', index=False)"
+        shell: bash
+        
       - name: Run tests
         run: pytest -v test2/test_algo_b_2_4_bis_traitement_unitaire.py -s
