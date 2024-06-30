@@ -13,6 +13,11 @@ import pytest
 from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 
+def test_traitement_utile_inutile(output_data):
+    # 'output_data' est le DataFrame traité passé automatiquement par pytest
+    result = traitement_utile_inutile(output_data)
+    assert not result.empty, "Le résultat ne doit pas être vide"
+    
 result = traitement_utile_inutile(result)
 
 
