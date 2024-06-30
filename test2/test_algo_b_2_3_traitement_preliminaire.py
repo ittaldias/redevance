@@ -13,10 +13,27 @@ import pytest
 from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 
-def test_traitement_utile_inutile(output_data):
-    # 'output_data' est le DataFrame traité passé automatiquement par pytest
-    result = traitement_utile_inutile(output_data)
+@pytest.fixture
+def processed_data():
+    raw_data = read_and_process_file("data/RDVC-20230522.pln")
+    return convert_and_calculate(raw_data)
+
+def test_traitement_utile_inutile(processed_data):
+    # Impression des données traitées pour débogage ou inspection
+    print("Affichage des données traitées:")
+    print(processed_data)
+
+    # Exécution de la fonction spécifique au traitement et impression des résultats
+    result = traitement_utile_inutile(processed_data)
+    print("Affichage du résultat du traitement:")
+    print(result)
+
+    # Assertions pour vérifier que tout fonctionne comme prévu
     assert not result.empty, "Le résultat ne doit pas être vide"
+    # Vous pouvez ajouter d'autres assertions pour valider les données spécifiques
+
+    # Optionnel: Imprimer des informations supplémentaires si nécessaire
+    print("Test complété avec succès.")
     
 result = traitement_utile_inutile(result)
 
