@@ -14,6 +14,8 @@ from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
 
+result = output_data()
+result = traitement_utile_inutile(result)
 result_utile = result[result["utile_inutile"] == "UTI"].copy()
 result_utile_traitee = traitement_unitaire(result_utile)
 
