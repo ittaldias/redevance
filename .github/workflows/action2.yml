@@ -62,7 +62,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run traitement_preliminaire tests
-        run: pytest --output=data/RDVC-20230522.pln test2/test_algo_b_2_3_traitement_preliminaire.py 
+        run: pytest test2/test_algo_b_2_3_traitement_preliminaire.py --output="data/RDVC-20230522.pln"
+
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
