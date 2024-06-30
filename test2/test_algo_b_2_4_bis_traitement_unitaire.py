@@ -7,117 +7,125 @@ Original file is located at
     https://colab.research.google.com/drive/1yaSCiDZZGkU5KJjhxJXSyoJGJT_qOTJK
 """
 
+# test_algo_b_2_4_bis_traitement_unitaire.py
+
+import pytest
 import pandas as pd
 import numpy as np
-import pytest
 from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
 
-result = output_data()
-result = traitement_utile_inutile(result)
-result_utile = result[result["utile_inutile"] == "UTI"].copy()
-result_utile_traitee = traitement_unitaire(result_utile)
+@pytest.fixture(scope="module")
+def processed_data():
+    raw_data = read_and_process_file("data/RDVC-20230522.pln")
+    processed_data = convert_and_calculate(raw_data)
+    result = traitement_utile_inutile(processed_data)
+    result_utile = result[result["utile_inutile"] == "UTI"].copy()
+    return traitement_unitaire(result_utile)
 
-def test_invalidite_NACT():
-    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="TOM22B"]["invalidite_TU"].iloc[0]
+def test_invalidite_NACT(processed_data):
+    invalidite = processed_data[processed_data["callSign_prevu"]=="TOM22B"]["invalidite_TU"].iloc[0]
     assert "NACT" in invalidite, "invalidite sans NACT"
 
-def test_validite_active():
-    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="TRA79Y"]["invalidite_TU"].iloc[0]
+def test_validite_active(processed_data):
+    invalidite = processed_data[processed_data["callSign_prevu"]=="TRA79Y"]["invalidite_TU"].iloc[0]
     assert not("NACT" in invalidite), "invalidite avec NACT"
 
-def test_invalidite_TYPAV():
-    invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="ANDER01"]["invalidite_TU"].iloc[0]
+def test_invalidite_TYPAV(processed_data):
+    invalidite = processed_data[processed_data["callSign_prevu"]=="ANDER01"]["invalidite_TU"].iloc[0]
     assert "TYPAV" in invalidite, "invalidite sans TYPAV"
 
-def test_aeronefs_moins_de_2_t():
+def test_creation_csv(processed_data):
+    processed_data.to_csv('output/final_outputBTU.csv', index=False)
+
+def test_aeronefs_moins_de_2_t(processed_data):
     aero_2_t = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="N214MW"]["aeronef_de_moins_de_deux_tonnes"].iloc[0]
     assert aero_2_t, "aero plus de 2 t"
 
-def test_dep_dans_emplacement_faux():
+def test_dep_dans_emplacement_faux(processed_data):
     invalidite = result_utile_traitee[result_utile_traitee["finaltransaction"]=="EVX04EKC"]["invalidite_TU"].iloc[0]
     assert "DEPAR2" in invalidite, "invalidite sans DEPAR2"
 
-def test_arr_dans_emplacement_faux():
+def test_arr_dans_emplacement_faux(processed_data):
     invalidite = result_utile_traitee[result_utile_traitee["finaltransaction"]=="EVX04EKCFWWEKI"]["invalidite_TU"].iloc[0]
     assert "ARRIV2" in invalidite, "invalidite sans ARRIV2"
 
-def test_depp_fr_a_transmettre():
-    a_transmettre = result_utile_traitee[result_utile_traitee["dep_realise"].str[:2] == "LF"]["vol_a_transmettre"].all()
+def test_depp_fr_a_transmettre(processed_data):
+    a_transmettre = result_utile_traitee[result_utile_traitee["dep_realise"].str[:2] == "LF"]["vol_a_transmettre"].all(processed_data)
     assert a_transmettre, "vol dep fr non a transmettre"
 
-def test_vol_approche():
+def test_vol_approche(processed_data):
     approche = result_utile_traitee[result_utile_traitee["finaltransaction"] == "LRQ267GC"]["vol_approche"].iloc[0]
     assert approche, "vol approche faux"
 
-def test_vol_interieur():
+def test_vol_interieur(processed_data):
     interieur = result_utile_traitee[result_utile_traitee["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
     assert interieur, "vol_interieur faux"
 
-def test_vol_interieur():
+def test_vol_interieur(processed_data):
     interieur = result_utile_traitee[result_utile_traitee["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
     assert interieur, "vol_interieur faux"
 
-def test_a_transmettre_ALGR():
+def test_a_transmettre_ALGR(processed_data):
     a_transmettre = result_utile_traitee[result_utile_traitee["finaltransaction"] == "BAW58L"]["vol_a_transmettre"].iloc[0]
     assert a_transmettre, "vol ccrArrival ALGR non a transmettre"
 
-def test_invalidite_TRANS2():
+def test_invalidite_TRANS2(processed_data):
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="OONLT"]["invalidite_TU"].iloc[0]
     assert "TRANS2" in invalidite, "invalidite sans TRANS2"
 
-def test_a_transmettre_ADET():
+def test_a_transmettre_ADET(processed_data):
     a_transmettre = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="HBVAL"]["vol_a_transmettre"].iloc[0]
     assert a_transmettre == "ADET", "a_transmettre diff de ADET"
 
-def test_indic_a_code_auto():
+def test_indic_a_code_auto(processed_data):
     exploitant = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="IAM3127"]["code_exploitant"].iloc[0]
     assert exploitant == "017", "code_exploitant faux"
 
-def test_type_avion_militaire():
+def test_type_avion_militaire(processed_data):
     avinon_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="IAM3127"]["type_d_avion_militaire"].iloc[0]
     assert avinon_militaire, "type_avion_militaire faux"
 
-def test_type_indicatifs_TR():
+def test_type_indicatifs_TR(processed_data):
     indicatif = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="EZY6488"]["type_d_indicatif"].iloc[0]
     assert indicatif == "TR", " type_indicatifs dif de TR"
 
-def test_invalidite_IVDIC5_EXO5():
+def test_invalidite_IVDIC5_EXO5(processed_data):
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="AIB89LR"]["invalidite_TU"].iloc[0]
     assert "IVDIC5" in invalidite and "EXO5" in invalidite, "invalidite sans IVDIC5 et EXO5"
 
-def test_compagnie_francaise():
+def test_compagnie_francaise(processed_data):
     cpg_francaise = result_utile_traitee[result_utile_traitee["callSign_prevu"]=="AFR98ML"]["compagnie_française"].iloc[0]
     assert cpg_francaise, "compagnie_francaise False"
 
-def test_exoneration_lettre_air_france():
+def test_exoneration_lettre_air_france(processed_data):
     exoneration = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "AFR903A"]["code_d_exoneration"].iloc[0]
     assert exoneration == "Z", "code_exoneration diff de Z"
 
-def test_type_d_indicatif_IM():
+def test_type_d_indicatif_IM(processed_data):
     indic = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "HBJFR"]["type_d_indicatif"].iloc[0]
     assert indic == "IM", "type_d_indicatif diff d'IM"
 
-def test_type_d_avion_militaire_False_EXO19():
+def test_type_d_avion_militaire_False_EXO19(processed_data):
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "JNS0729"]["invalidite_TU"].iloc[0]
     type_d_avion_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "JNS0729"]["type_d_avion_militaire"].iloc[0]
     assert not(type_d_avion_militaire) and "EXO19" in invalidite, "type_d_avion_militaire True ou invalidite sans EXO19"
 
-def test_type_d_avion_militaire_True_EXO19():
+def test_type_d_avion_militaire_True_EXO19(processed_data):
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DMON18"]["invalidite_TU"].iloc[0]
     type_d_avion_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DMON18"]["type_d_avion_militaire"].iloc[0]
     assert type_d_avion_militaire and "EXO19" in invalidite, "type_d_avion_militaire false ou invalidite sans EXO19"
 
-def test_type_d_avion_militaire_True_TYPA19():
+def test_type_d_avion_militaire_True_TYPA19(processed_data):
     invalidite = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DAMOC"]["invalidite_TU"].iloc[0]
     type_d_avion_militaire = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "DAMOC"]["type_d_avion_militaire"].iloc[0]
     assert type_d_avion_militaire and "TYPA19" in invalidite, "type_d_avion_militaire false ou invalidite sans TYPA19"
 
-def test_code_d_exoneration_T():
+def test_code_d_exoneration_T(processed_data):
     exoneration = result_utile_traitee[result_utile_traitee["callSign_prevu"] == "NAK083"]["code_d_exoneration"].iloc[0]
     assert exoneration == "T", "code_d_exoneration diff de T"
 
-def test_creation_csv():
+def test_creation_csv(processed_data):
     result.to_csv('output/final_outputBTU.csv', index=False)
 
