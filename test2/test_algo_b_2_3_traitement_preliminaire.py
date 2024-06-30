@@ -12,7 +12,6 @@ import numpy as np
 import pytest
 from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
-from test2.conftest import output_data
 
 result = traitement_utile_inutile(result)
 
