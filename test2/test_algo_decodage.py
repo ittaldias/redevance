@@ -9,6 +9,10 @@ output = read_and_process_file("data/RDVC-20230522.pln")
 output = convert_and_calculate(output)
 date_str = '22-05-2023'
 date_obj = datetime.strptime(date_str, "%d-%m-%Y")
+
+def test_processing(output):
+    # Assuming 'output_data' is a DataFrame
+    assert not output.empty, "Data Frame is empty"
 def calcul_DatedeReference(row):
     date_obj = datetime(2023, 5, 22, 0, 0)
     
