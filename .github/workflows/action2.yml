@@ -23,16 +23,30 @@ jobs:
   lecture_stan:  # Job to run specific tests after building
     runs-on: ubuntu-latest
     needs: build
+    strategy:
+      matrix:
+        test-set: ['installdependencies', 'test', 'stan3']
     steps:
       - name: Setup and Run lecture_stan tests
         uses: actions/checkout@v2
+
       - uses: actions/setup-python@v3
         with:
           python-version: '3.x'
+
       - run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage.py -s
+
+      - name: Install dependencies
+        if: ${{ matrix.test-set == 'installdependencies' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Specific Tests
+        if: ${{ matrix.test-set == 'test' }}
+        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage_stan.py -s
 
   # Additional jobs can be similarly commented to provide context in the YAML itself
   traitement_preliminaire:
@@ -49,8 +63,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
+      - run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
@@ -70,14 +83,29 @@ jobs:
   traitement_pln_utile:
     runs-on: ubuntu-latest
     needs: traitement_preliminaire
+    strategy:
+      matrix:
+        test-set: ['install', 'test']
     steps:
       - name: Setup Test Environment
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
+
       - uses: actions/setup-python@v3
         with:
           python-version: '3.x'
+
       - run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Install dependencies
+        if: ${{ matrix.test-set == 'install' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+
       - name: Run Tests for traitement_pln_utile
-        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_b_2_4_bis_traitement_unitaire.py -s
+        if: ${{ matrix.test-set == 'test' }}
+        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_b_2_4_bis_traitement_utile.py -s
+
