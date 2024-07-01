@@ -43,5 +43,3 @@ def test_realise_centre_nan(output_data):
     utilite = output_data[output_data["callSign_prevu"]=="UAL71"]["utile_inutile"].iloc[0]
     assert utilite == "2SLF", "utilité diff de 2SLF"
 
-def test_creation_csv(output_data):
-    output_data.to_csv('output/final_outputTP.csv', index=False)
