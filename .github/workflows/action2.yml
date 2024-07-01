@@ -80,7 +80,7 @@ jobs:
 
       - name: Run Tests
         if: ${{ matrix.test-set == 'set2' }}
-        run: pytest -v test2/test_algo_b_2_3_traitement_preliminaire.py --output="data/RDVC-20230522.pln" -s
+        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_b_2_3_traitement_preliminaire.py  -s
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
