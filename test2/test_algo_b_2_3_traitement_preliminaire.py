@@ -16,13 +16,13 @@ output_data = convert_and_calculate(output_data)
 
 
 def test_utile_vol_active_non_fictif(output_data):
-    utilite = output_data[output_data["callSign_prevu"]=="TRA79Y"]["utile_inutile"].iloc[0]
+    utilite = output_data[output_data["callSign_prevu"] == "TRA79Y"]["utile_inutile"].iloc[0]
     assert utilite == "UTI", "utilité diff de UTI"
 
 def test_inutile_vol_fictif_avec_moins(output_data):
-    utilite = output_data[output_data["callSign_prevu"]=="RFIN65"]["utile_inutile"].iloc[0]
+    utilite = output_data[output_data["callSign_prevu"] == "RFIN65"]["utile_inutile"].iloc[0]
     assert utilite == "FICT", "utilité diff de FICT"
-
+    
 def test_inutile_vol_annule(output_data):
     utilite = output_data[output_data["callSign_prevu"]=="THY90F"]["utile_inutile"].iloc[0]
     assert utilite == "CNL", "utilité diff de CNL"
