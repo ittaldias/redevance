@@ -1,7 +1,12 @@
 name: RDVC application
 
 on:
-  workflow_dispatch:  # Allows manual trigger from the GitHub UI
+  push:
+    branches: [ main ]
+    paths:
+        - 'src/**'
+        - 'test/**'
+  workflow_dispatch:
 
 jobs:
   build:  # Sets up the environment and installs dependencies
