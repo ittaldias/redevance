@@ -9,11 +9,7 @@ Original file is located at
 import pytest
 import pandas as pd
 import numpy as np
-from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
-
-output_data = convert_and_calculate(output_data)
-
 
 def test_utile_vol_active_non_fictif(output_data):
     utilite = output_data[output_data["callSign_prevu"] == "TRA79Y"]["utile_inutile"].iloc[0]
