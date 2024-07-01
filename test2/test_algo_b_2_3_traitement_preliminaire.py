@@ -13,16 +13,17 @@ from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 
 @pytest.fixture(scope="module")
-def result():
-    raw_data = read_and_process_file("data/RDVC-20230522.pln")
-    processed_data = convert_and_calculate(raw_data)
-    return traitement_utile_inutile(processed_data)
 
 def test_traitement_utile_inutile(result):
     print("Affichage des données traitées:")
     print(result)
     assert not result.empty, "Le résultat ne doit pas être vide"
     print("Test complété avec succès.")
+    
+def result():
+    raw_data = read_and_process_file("data/RDVC-20230522.pln")
+    processed_data = convert_and_calculate(raw_data)
+    return traitement_utile_inutile(processed_data)
 
 def test_utile_vol_active_non_fictif(result):
     utilite = result[result["callSign_prevu"]=="TRA79Y"]["utile_inutile"].iloc[0]
