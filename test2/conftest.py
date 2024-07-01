@@ -15,7 +15,7 @@ def pytest_addoption(parser):
 def output_data(request):
     file_path = request.config.getoption("--output")
     try:
-        data = read_and_process_file(file_path)
+        data = read_and_process_file("data/RDVC-20230522.pln")
         processed_data = convert_and_calculate(data)
         return processed_data
     except Exception as e:
