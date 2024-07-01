@@ -54,18 +54,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Tests Set 1
+      - name: Install dependencies
         if: ${{ matrix.test-set == 'set1' }}
-        run: pytest -v test2/tests_set1.py --output="data/RDVC-20230522.pln" -s
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run Tests Set 2
+
+      - name: Run Tests
         if: ${{ matrix.test-set == 'set2' }}
-        run: pytest -v test2/tests_set2.py --output="data/RDVC-20230522.pln" -s
+        run: pytest -v test2/tests_algo_2_3_traitement_unitaire.py --output="data/RDVC-20230522.pln" -s
 
-      - name: Run Tests Set 3
-        if: ${{ matrix.test-set == 'set3' }}
-        run: pytest -v test2/tests_set3.py --output="data/RDVC-20230522.pln" -s
-
+  
 
   traitement_pln_utile:
     runs-on: ubuntu-latest
