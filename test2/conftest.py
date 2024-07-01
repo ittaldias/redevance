@@ -3,6 +3,7 @@ import pytest
 import pandas as pd
 from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
+from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -17,5 +18,6 @@ def output_data(request):
     output_data = read_and_process_file("data/RDVC-20230522.pln",)
     output_data = traitement_utile_inutile(output_data)
     output_data = convert_and_calculate(output_data)
+    output_data = traitement_unitaire(output_data)
     return output_data
 
