@@ -46,11 +46,11 @@ jobs:
 
       - name: Run Specific Tests
         if: ${{ matrix.test-set == 'test' }}
-        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage_stan.py -s
+        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage.py -s
 
-  # Additional jobs can be similarly commented to provide context in the YAML itself
   traitement_preliminaire:
     runs-on: ubuntu-latest
+    needs: build  # Ensures this job runs after 'build'
     strategy:
       matrix:
         test-set: ['set1', 'set2', 'set3']
@@ -73,16 +73,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
       - name: Run Tests
         if: ${{ matrix.test-set == 'set2' }}
         run: pytest -v test2/test_algo_b_2_3_traitement_preliminaire.py --output="data/RDVC-20230522.pln" -s
 
-  
-
   traitement_pln_utile:
     runs-on: ubuntu-latest
-    needs: traitement_preliminaire
+    needs: [traitement_preliminaire, lecture_stan]  # Waits for both these jobs to complete
     strategy:
       matrix:
         test-set: ['install', 'test']
@@ -104,8 +101,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
       - name: Run Tests for traitement_pln_utile
         if: ${{ matrix.test-set == 'test' }}
         run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_b_2_4_bis_traitement_utile.py -s
-
