@@ -12,50 +12,40 @@ import numpy as np
 from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 
-@pytest.fixture(scope="module")
+output_data = convert_and_calculate(output_data)
 
-def test_traitement_utile_inutile(result):
-    print("Affichage des données traitées:")
-    print(output)
-    assert not result.empty, "Le résultat ne doit pas être vide"
-    print("Test complété avec succès.")
-    
-def result():
-    raw_data = read_and_process_file("data/RDVC-20230522.pln")
-    processed_data = convert_and_calculate(raw_data)
-    return traitement_utile_inutile(processed_data)
 
-def test_utile_vol_active_non_fictif(result):
-    utilite = result[result["callSign_prevu"]=="TRA79Y"]["utile_inutile"].iloc[0]
+def test_utile_vol_active_non_fictif(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="TRA79Y"]["utile_inutile"].iloc[0]
     assert utilite == "UTI", "utilité diff de UTI"
 
-def test_inutile_vol_fictif_avec_moins(result):
-    utilite = result[result["callSign_prevu"]=="RFIN65"]["utile_inutile"].iloc[0]
+def test_inutile_vol_fictif_avec_moins(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="RFIN65"]["utile_inutile"].iloc[0]
     assert utilite == "FICT", "utilité diff de FICT"
 
-def test_inutile_vol_annule(result):
-    utilite = result[result["callSign_prevu"]=="THY90F"]["utile_inutile"].iloc[0]
+def test_inutile_vol_annule(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="THY90F"]["utile_inutile"].iloc[0]
     assert utilite == "CNL", "utilité diff de CNL"
 
-def test_inutile_vol_centrefr(result):
-    utilite = result[result["callSign_prevu"]=="TRA4N"]["utile_inutile"].iloc[0]
+def test_inutile_vol_centrefr(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="TRA4N"]["utile_inutile"].iloc[0]
     assert utilite == "2SLF", "utilité diff de 2SLF"
 
-def test_inutile_vol_circulaire(result):
-    utilite = result[result["callSign_prevu"]=="FNY5118"]["utile_inutile"].iloc[0]
+def test_inutile_vol_circulaire(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="FNY5118"]["utile_inutile"].iloc[0]
     assert utilite == "CIRC", "utilité diff de CIRC"
 
-def test_utile_vol_tout_les_test_faux(result):
-    utilite = result[result["callSign_prevu"]=="TOM22B"]["utile_inutile"].iloc[0]
+def test_utile_vol_tout_les_test_faux(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="TOM22B"]["utile_inutile"].iloc[0]
     assert utilite == "UTI", "utilité diff de UTI"
 
-def test_realise_pln_nan(result):
-    utilite = result[result["callSign_prevu"]=="THY90F"]["utile_inutile"].iloc[0]
+def test_realise_pln_nan(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="THY90F"]["utile_inutile"].iloc[0]
     assert utilite == "CNL", "utilité diff de CNL"
 
-def test_realise_centre_nan(result):
-    utilite = result[result["callSign_prevu"]=="UAL71"]["utile_inutile"].iloc[0]
+def test_realise_centre_nan(output_data):
+    utilite = output_data[output_data["callSign_prevu"]=="UAL71"]["utile_inutile"].iloc[0]
     assert utilite == "2SLF", "utilité diff de 2SLF"
 
-def test_creation_csv(result):
-    result.to_csv('output/final_outputTP.csv', index=False)
+def test_creation_csv(output_data):
+    output_data.to_csv('output/final_outputTP.csv', index=False)
