@@ -55,7 +55,7 @@ jobs:
 
   traitement_preliminaire:
     runs-on: ubuntu-latest
-    needs: build  # Ensures this job runs after 'build'
+    needs: lecture_stan  # Ensures this job runs after 'build'
     strategy:
       matrix:
         test-set: ['set1', 'set2', 'set3']
