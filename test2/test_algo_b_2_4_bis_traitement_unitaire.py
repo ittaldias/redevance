@@ -18,102 +18,102 @@ from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
 
 
 
-def test_invalidite_NACT(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"]=="TOM22B"]["invalidite_TU"].iloc[0]
+def test_invalidite_NACT(output_data):
+    invalidite = output_data[output_data["callSign_prevu"]=="TOM22B"]["invalidite_TU"].iloc[0]
     assert "NACT" in invalidite, "invalidite sans NACT"
 
-def test_validite_active(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"]=="TRA79Y"]["invalidite_TU"].iloc[0]
+def test_validite_active(output_data):
+    invalidite = output_data[output_data["callSign_prevu"]=="TRA79Y"]["invalidite_TU"].iloc[0]
     assert not("NACT" in invalidite), "invalidite avec NACT"
     
-def test_invalidite_TYPAV(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"]=="ANDER01"]["invalidite_TU"].iloc[0]
+def test_invalidite_TYPAV(output_data):
+    invalidite = output_data[output_data["callSign_prevu"]=="ANDER01"]["invalidite_TU"].iloc[0]
     assert "TYPAV" in invalidite, "invalidite sans TYPAV"
 
-def test_creation_csv(processed_data):
-    processed_data.to_csv('output/final_outputBTU.csv', index=False)
+def test_creation_csv(output_data):
+    output_data.to_csv('output/final_outputBTU.csv', index=False)
 
-def test_aeronefs_moins_de_2_t(processed_data):
-    aero_2_t = processed_data[processed_data["callSign_prevu"]=="N214MW"]["aeronef_de_moins_de_deux_tonnes"].iloc[0]
+def test_aeronefs_moins_de_2_t(output_data):
+    aero_2_t = output_data[output_data["callSign_prevu"]=="N214MW"]["aeronef_de_moins_de_deux_tonnes"].iloc[0]
     assert aero_2_t, "aero plus de 2 t"
 
-def test_dep_dans_emplacement_faux(processed_data):
-    invalidite = processed_data[processed_data["finaltransaction"]=="EVX04EKC"]["invalidite_TU"].iloc[0]
+def test_dep_dans_emplacement_faux(output_data):
+    invalidite = output_data[output_data["finaltransaction"]=="EVX04EKC"]["invalidite_TU"].iloc[0]
     assert "DEPAR2" in invalidite, "invalidite sans DEPAR2"
 
-def test_arr_dans_emplacement_faux(processed_data):
-    invalidite = processed_data[processed_data["finaltransaction"]=="EVX04EKCFWWEKI"]["invalidite_TU"].iloc[0]
+def test_arr_dans_emplacement_faux(output_data):
+    invalidite = output_data[output_data["finaltransaction"]=="EVX04EKCFWWEKI"]["invalidite_TU"].iloc[0]
     assert "ARRIV2" in invalidite, "invalidite sans ARRIV2"
 
-def test_vol_approche(processed_data):
-    approche = processed_data[processed_data["finaltransaction"] == "LRQ267GC"]["vol_approche"].iloc[0]
+def test_vol_approche(output_data):
+    approche = output_data[output_data["finaltransaction"] == "LRQ267GC"]["vol_approche"].iloc[0]
     assert approche, "vol approche faux"
 
-def test_vol_interieur(processed_data):
-    interieur = processed_data[processed_data["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
+def test_vol_interieur(output_data):
+    interieur = output_data[output_data["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
     assert interieur, "vol_interieur faux"
 
-def test_vol_interieur(processed_data):
-    interieur = processed_data[processed_data["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
+def test_vol_interieur(output_data):
+    interieur = output_data[output_data["finaltransaction"] == "EZS468ZLHBJXAI"]["vol_interieur"].iloc[0]
     assert interieur, "vol_interieur faux"
 
-def test_a_transmettre_ALGR(processed_data):
-    a_transmettre = processed_data[processed_data["finaltransaction"] == "BAW58L"]["vol_a_transmettre"].iloc[0]
+def test_a_transmettre_ALGR(output_data):
+    a_transmettre = output_data[output_data["finaltransaction"] == "BAW58L"]["vol_a_transmettre"].iloc[0]
     assert a_transmettre, "vol ccrArrival ALGR non a transmettre"
 
-def test_invalidite_TRANS2(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"]=="OONLT"]["invalidite_TU"].iloc[0]
+def test_invalidite_TRANS2(output_data):
+    invalidite = output_data[output_data["callSign_prevu"]=="OONLT"]["invalidite_TU"].iloc[0]
     assert "TRANS2" in invalidite, "invalidite sans TRANS2"
 
-def test_a_transmettre_ADET(processed_data):
-    a_transmettre = processed_data[processed_data["callSign_prevu"]=="HBVAL"]["vol_a_transmettre"].iloc[0]
+def test_a_transmettre_ADET(output_data):
+    a_transmettre = output_data[output_data["callSign_prevu"]=="HBVAL"]["vol_a_transmettre"].iloc[0]
     assert a_transmettre == "ADET", "a_transmettre diff de ADET"
 
-def test_indic_a_code_auto(processed_data):
-    exploitant = processed_data[processed_data["callSign_prevu"]=="IAM3127"]["code_exploitant"].iloc[0]
+def test_indic_a_code_auto(output_data):
+    exploitant = output_data[output_data["callSign_prevu"]=="IAM3127"]["code_exploitant"].iloc[0]
     assert exploitant == "017", "code_exploitant faux"
 
-def test_type_avion_militaire(processed_data):
-    avinon_militaire = processed_data[processed_data["callSign_prevu"]=="IAM3127"]["type_d_avion_militaire"].iloc[0]
+def test_type_avion_militaire(output_data):
+    avinon_militaire = output_data[output_data["callSign_prevu"]=="IAM3127"]["type_d_avion_militaire"].iloc[0]
     assert avinon_militaire, "type_avion_militaire faux"
 
-def test_type_indicatifs_TR(processed_data):
-    indicatif = processed_data[processed_data["callSign_prevu"]=="EZY6488"]["type_d_indicatif"].iloc[0]
+def test_type_indicatifs_TR(output_data):
+    indicatif = output_data[output_data["callSign_prevu"]=="EZY6488"]["type_d_indicatif"].iloc[0]
     assert indicatif == "TR", " type_indicatifs dif de TR"
 
-def test_invalidite_IVDIC5_EXO5(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"]=="AIB89LR"]["invalidite_TU"].iloc[0]
+def test_invalidite_IVDIC5_EXO5(output_data):
+    invalidite = output_data[output_data["callSign_prevu"]=="AIB89LR"]["invalidite_TU"].iloc[0]
     assert "IVDIC5" in invalidite and "EXO5" in invalidite, "invalidite sans IVDIC5 et EXO5"
 
-def test_compagnie_francaise(processed_data):
-    cpg_francaise = processed_data[processed_data["callSign_prevu"]=="AFR98ML"]["compagnie_française"].iloc[0]
+def test_compagnie_francaise(output_data):
+    cpg_francaise = output_data[output_data["callSign_prevu"]=="AFR98ML"]["compagnie_française"].iloc[0]
     assert cpg_francaise, "compagnie_francaise False"
 
-def test_exoneration_lettre_air_france(processed_data):
-    exoneration = processed_data[processed_data["callSign_prevu"] == "AFR903A"]["code_d_exoneration"].iloc[0]
+def test_exoneration_lettre_air_france(output_data):
+    exoneration = output_data[output_data["callSign_prevu"] == "AFR903A"]["code_d_exoneration"].iloc[0]
     assert exoneration == "Z", "code_exoneration diff de Z"
 
-def test_type_d_indicatif_IM(processed_data):
-    indic = processed_data[processed_data["callSign_prevu"] == "HBJFR"]["type_d_indicatif"].iloc[0]
+def test_type_d_indicatif_IM(output_data):
+    indic = output_data[output_data["callSign_prevu"] == "HBJFR"]["type_d_indicatif"].iloc[0]
     assert indic == "IM", "type_d_indicatif diff d'IM"
 
-def test_type_d_avion_militaire_False_EXO19(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"] == "JNS0729"]["invalidite_TU"].iloc[0]
-    type_d_avion_militaire = processed_data[processed_data["callSign_prevu"] == "JNS0729"]["type_d_avion_militaire"].iloc[0]
+def test_type_d_avion_militaire_False_EXO19(output_data):
+    invalidite = output_data[output_data["callSign_prevu"] == "JNS0729"]["invalidite_TU"].iloc[0]
+    type_d_avion_militaire = output_data[output_data["callSign_prevu"] == "JNS0729"]["type_d_avion_militaire"].iloc[0]
     assert not(type_d_avion_militaire) and "EXO19" in invalidite, "type_d_avion_militaire True ou invalidite sans EXO19"
 
-def test_type_d_avion_militaire_True_EXO19(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"] == "DMON18"]["invalidite_TU"].iloc[0]
-    type_d_avion_militaire = processed_data[processed_data["callSign_prevu"] == "DMON18"]["type_d_avion_militaire"].iloc[0]
+def test_type_d_avion_militaire_True_EXO19(output_data):
+    invalidite = output_data[output_data["callSign_prevu"] == "DMON18"]["invalidite_TU"].iloc[0]
+    type_d_avion_militaire = output_data[output_data["callSign_prevu"] == "DMON18"]["type_d_avion_militaire"].iloc[0]
     assert type_d_avion_militaire and "EXO19" in invalidite, "type_d_avion_militaire false ou invalidite sans EXO19"
 
-def test_type_d_avion_militaire_True_TYPA19(processed_data):
-    invalidite = processed_data[processed_data["callSign_prevu"] == "DAMOC"]["invalidite_TU"].iloc[0]
-    type_d_avion_militaire = processed_data[processed_data["callSign_prevu"] == "DAMOC"]["type_d_avion_militaire"].iloc[0]
+def test_type_d_avion_militaire_True_TYPA19(output_data):
+    invalidite = output_data[output_data["callSign_prevu"] == "DAMOC"]["invalidite_TU"].iloc[0]
+    type_d_avion_militaire = output_data[output_data["callSign_prevu"] == "DAMOC"]["type_d_avion_militaire"].iloc[0]
     assert type_d_avion_militaire and "TYPA19" in invalidite, "type_d_avion_militaire false ou invalidite sans TYPA19"
 
-def test_code_d_exoneration_T(processed_data):
-    exoneration = processed_data[processed_data["callSign_prevu"] == "NAK083"]["code_d_exoneration"].iloc[0]
+def test_code_d_exoneration_T(output_data):
+    exoneration = output_data[output_data["callSign_prevu"] == "NAK083"]["code_d_exoneration"].iloc[0]
     assert exoneration == "T", "code_d_exoneration diff de T"
 
 
