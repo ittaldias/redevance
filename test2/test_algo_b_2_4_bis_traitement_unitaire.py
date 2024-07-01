@@ -16,12 +16,7 @@ from src.stan import read_and_process_file, convert_and_calculate
 from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 from src.algo_b_2_4_bis_traitement_unitaire import traitement_unitaire
 
-@pytest.fixture(scope="module")
-def processed_data():
-    raw_data = read_and_process_file("data/RDVC-20230522.pln")
-    processed_data = convert_and_calculate(raw_data)
-    result = traitement_utile_inutile(processed_data)
-    return traitement_unitaire(result[result["utile_inutile"] == "UTI"].copy())
+
 
 def test_invalidite_NACT(processed_data):
     invalidite = processed_data[processed_data["callSign_prevu"]=="TOM22B"]["invalidite_TU"].iloc[0]
