@@ -15,7 +15,7 @@ def pytest_addoption(parser):
 def output_data(request):
     file_path = request.config.getoption("--output")
     output_data = read_and_process_file("data/RDVC-20230522.pln",)
-    output_data = traitement_utile_inutile(data)
-    output_data = convert_and_calculate(data)
+    output_data = traitement_utile_inutile(output_data)
+    output_data = convert_and_calculate(output_data)
     return output_data
 
