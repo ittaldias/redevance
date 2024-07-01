@@ -16,7 +16,7 @@ from src.algo_b_2_3_traitement_preliminaire import traitement_utile_inutile
 
 def test_traitement_utile_inutile(result):
     print("Affichage des données traitées:")
-    print(result)
+    print(output)
     assert not result.empty, "Le résultat ne doit pas être vide"
     print("Test complété avec succès.")
     
