@@ -53,7 +53,7 @@ jobs:
       - name: Run Specific Tests
         if: ${{ matrix.test-set == 'test' }}
         id: step1
-        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage.py::read_and_process_file("data/RDVC-20230522.pln") -s >> "$GITHUB_OUTPUT"
+        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage.py::output_stan -s >> "$GITHUB_OUTPUT"
       - name: Run Specific Tests
         if: ${{ matrix.test-set == 'test' }}
         run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage.py -s
