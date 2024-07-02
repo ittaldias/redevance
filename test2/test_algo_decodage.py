@@ -6,10 +6,12 @@ from src.stan import read_and_process_file, convert_and_calculate
 #test
 
 output = read_and_process_file("data/RDVC-20230522.pln")
+
+def output_stan():
+    return output
 output = convert_and_calculate(output)
 date_str = '22-05-2023'
 date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-
 def test_processing(output_data):
     # Assuming 'output_data' is a DataFrame
     assert not output_data.empty, "Data Frame is empty"
