@@ -63,12 +63,11 @@ jobs:
     needs: lecture_stan  # Ensures this job runs after 'build'
     strategy:
       matrix:
-        test-set: ['set1', 'set2', 'set3']
+        test-set: ['env','set1', 'set2', 'set3']
     steps:
       - env:
-          OUTPUT1: ${{needs.job1.outputs.output1}}
-          OUTPUT2: ${{needs.job1.outputs.output2}}
-        run: echo "$OUTPUT1 $OUTPUT2"
+          OUTPUT1: ${{needs.lecture_stan.outputs.output1}}
+        run: echo "$OUTPUT1"
       - name: Checkout repository
         uses: actions/checkout@v2
 
