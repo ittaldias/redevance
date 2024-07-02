@@ -31,6 +31,8 @@ jobs:
     strategy:
       matrix:
         test-set: ['installdependencies', 'test', 'stan3']
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
     steps:
       - name: Setup and Run lecture_stan tests
         uses: actions/checkout@v2
@@ -48,7 +50,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+      - name: Run Specific Tests
+        if: ${{ matrix.test-set == 'test' }}
+        id: step1
+        run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage.py::read_and_process_file("data/RDVC-20230522.pln") -s >> "$GITHUB_OUTPUT"
       - name: Run Specific Tests
         if: ${{ matrix.test-set == 'test' }}
         run: pytest -v --output=data/RDVC-20230522.pln test2/test_algo_decodage.py -s
@@ -60,6 +65,10 @@ jobs:
       matrix:
         test-set: ['set1', 'set2', 'set3']
     steps:
+      - env:
+          OUTPUT1: ${{needs.job1.outputs.output1}}
+          OUTPUT2: ${{needs.job1.outputs.output2}}
+        run: echo "$OUTPUT1 $OUTPUT2"
       - name: Checkout repository
         uses: actions/checkout@v2
 
