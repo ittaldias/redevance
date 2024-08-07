@@ -8,29 +8,7 @@ result, date_obj = read_and_process_file("data/RDVC-20230522.pln")
 result = convert_and_calculate(result, date_obj)
 date_str = '22-05-2023'
 date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-def calcul_DatedeReference(row):
-    date_obj = datetime(2023, 5, 22, 0, 0)
-    
-    if not pd.isnull(row['dateRelative_realise']):
-        if row['dateRelative_realise'] == 0:
-            return date_obj
-        elif row['dateRelative_realise'] == 1:
-            return date_obj - timedelta(days=1)
-        elif row['dateRelative_realise'] == -1:
-            return date_obj + timedelta(days=1)
-    
-    elif not pd.isnull(row['dateRelative_final']):
-        if row['dateRelative_final'] == 0:
-            return date_obj
-        elif row['dateRelative_final'] == 1:
-            return date_obj - timedelta(days=1)
-        elif row['dateRelative_final'] == -1:
-            return date_obj + timedelta(days=1)
-    
-    # Return None if none of the conditions match
-    return None
 
-output['date_de_reference']= output.apply(calcul_DatedeReference, axis=1).astype('datetime64[ns]')
 def test_dateRelative_realise_HeurePremiereBaliseActive_realise_jourdarchive():
     heure_de_reference = output.loc[output['callSign_prevu'] == 'SWR9G', 'heure_de_reference'].values[0]
     assert heure_de_reference == 465.0, print(output.info())
