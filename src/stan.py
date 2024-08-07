@@ -178,7 +178,7 @@ def read_and_process_file(fichier_a_deposee):
 
     return output, str(date_obj)[:10]
 
-def convert_and_calculate(df):
+def convert_and_calculate(df, date_obj):
     df['HeurePremiereBaliseActive_realise'] = df['HeurePremiereBaliseActive_realise'].astype('Int64')
     df['HeurePremiereBaliseActive_final'] = df['HeurePremiereBaliseActive_final'].astype('Int64')
     df['HeurePremiereBalise_final'] = df['HeurePremiereBalise_final'].astype('Int64')
