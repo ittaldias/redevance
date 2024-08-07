@@ -184,7 +184,7 @@ def convert_and_calculate(df, date_obj):
     df['HeurePremiereBalise_final'] = df['HeurePremiereBalise_final'].astype('Int64')
     df['dateRelative_realise'] = df['dateRelative_realise'].astype('Int64')
     df['dateRelative_final'] = df['dateRelative_final'].astype('Int64')
-    if date_obj[:4] == "2024":
+    if date_obj[:4] == "2024" or date_obj[:4] == "2023":
         date_obj = datetime.strptime(date_obj, "%Y-%m-%d")
     else:
         date_obj = datetime.strptime(date_obj, "%d-%m-%Y")
