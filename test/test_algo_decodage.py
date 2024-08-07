@@ -4,8 +4,8 @@ import pytest
 from datetime import datetime, timedelta
 from src.stan import read_and_process_file, convert_and_calculate
 #TEST GIT
-result, date_obj = read_and_process_file("data/RDVC-20230522.pln")
-result = convert_and_calculate(result, date_obj)
+output, date_obj = read_and_process_file("data/RDVC-20230522.pln")
+output = convert_and_calculate(result, date_obj)
 date_str = '22-05-2023'
 date_obj = datetime.strptime(date_str, "%d-%m-%Y")
 
