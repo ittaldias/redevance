@@ -5,11 +5,11 @@ from datetime import datetime, timedelta
 from src.stan import read_and_process_file, convert_and_calculate
 #test
 
-output = read_and_process_file("data/RDVC-20230522.pln")
+output, date_obj = read_and_process_file("data/RDVC-20230522.pln")
 
 def output_stan():
     return output
-output = convert_and_calculate(output)
+output = convert_and_calculate(output, date_obj)
 date_str = '22-05-2023'
 date_obj = datetime.strptime(date_str, "%d-%m-%Y")
 def test_processing(output_data):
