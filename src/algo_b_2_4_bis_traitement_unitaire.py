@@ -119,6 +119,7 @@ def TU_2(df_utile):
 """## Algo 3"""
 
 def TU_3_bis(df_utile):
+    eurocontrol = ['EB','ED','EF','EG','EH','EI','EK','EL','EN','EP','ES','EV','EY','LA','LB','LC','LD','LE','LG','LH','LI','LJ','LK','LM','LO','LP','LQ','LR','LS','LT','LU','LW','LY','LZ','UD','UG','GC']
     def TU_3_bis_element(x):
         dep_value = None
         for col in ["dep_realise", "dep_final", "dep_prevu"]:
@@ -129,8 +130,13 @@ def TU_3_bis(df_utile):
             x['PLN_valide'] = False
             x['PLN_à_verifier_TU'] = False
             x['invalidite_TU'].extend(["DEPAR2", "TRANS1"])
+        elif dep_value[:2] in eurocontrol:
+            x['vol_a_transmettre'] = False
         elif x["ccrArrival"] == "ALGR":
             x['vol_a_transmettre'] = True
+        elif x["ccrArrival"] == "ETRG":
+            if ((x['dep_prevu'][:1]=='D' or x['dep_prevu'][:1]=='F') and 'TABOT' in x['case15']):
+                x['vol_a_transmettre'] = True
         else:
             x['vol_a_transmettre'] = False
         return x
