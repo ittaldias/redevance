@@ -21,6 +21,7 @@ def read_and_process_file(fichier_a_deposee):
     compteur = 0
     tableau_vol = {}
     compteurCcr = 0
+    date_obj = ""
 
     with open(fichier_a_deposee, 'r') as fichier:
         for i, ligne in enumerate(fichier):
@@ -40,6 +41,8 @@ def read_and_process_file(fichier_a_deposee):
                 isprevu = False
                 isrealise = False
                 isfinal = False
+                is81 = False
+                is82 = False 
                 balise = ''
                 hneg = False
                 flag82 = False
@@ -122,7 +125,8 @@ def read_and_process_file(fichier_a_deposee):
                 tableau_vol['listeRangPremier' + etat] = words[1]
             if words[0] == "80":
                 tableau_vol['rangTransaction' + etat] = words[1]
-            if words[0] == "81":
+            if words[0] == "81" and not is81:
+                is81 = True
                 if len(words) >= 15:
                     parts = ligne.split("-")
                     last_word = parts[0].split()[-1]
@@ -157,7 +161,8 @@ def read_and_process_file(fichier_a_deposee):
                         else:
                             print(ligne)
                             compteur += 1
-            if words[0] == "82":
+            if words[0] == "82" and not is82:
+                is82 = True
                 tableau_vol['heure'] = (words[1][:2])
                 tableau_vol['minute'] = (words[1][3:])
                 tableau_vol['accuseTrt' + etat] = words[1]
@@ -171,7 +176,7 @@ def read_and_process_file(fichier_a_deposee):
             if words[0] == "84":
                 tableau_vol['final' + etat] = words[1]
 
-    return output
+    return output, str(date_obj)[:10]
 
 def convert_and_calculate(df):
     df['HeurePremiereBaliseActive_realise'] = df['HeurePremiereBaliseActive_realise'].astype('Int64')
@@ -179,6 +184,10 @@ def convert_and_calculate(df):
     df['HeurePremiereBalise_final'] = df['HeurePremiereBalise_final'].astype('Int64')
     df['dateRelative_realise'] = df['dateRelative_realise'].astype('Int64')
     df['dateRelative_final'] = df['dateRelative_final'].astype('Int64')
+    if date_obj[:4] == "2024":
+        date_obj = datetime.strptime(date_obj, "%Y-%m-%d")
+    else:
+        date_obj = datetime.strptime(date_obj, "%d-%m-%Y")
 
     def calcul_HeureDeReference(row):
         try:
@@ -208,15 +217,19 @@ def convert_and_calculate(df):
                     return date_obj
                 elif row['dateRelative_realise'] == 1:
                     return date_obj - timedelta(days=1)
-                elif row['dateRelative_realise'] == -1:
-                    return date_obj + timedelta(days=1)
+                elif row['dateRelative_realise'] == -1 and int(row['heure_de_reference'])<0:
+                    return date_obj - timedelta(days=1)
+                else:
+                    return date_obj
             elif not pd.isna(row['dateRelative_final']) and not pd.isnull(row['dateRelative_final']):
                 if row['dateRelative_final'] == 0:
                     return date_obj
                 elif row['dateRelative_final'] == 1:
                     return date_obj - timedelta(days=1)
-                elif row['dateRelative_final'] == -1:
-                    return date_obj + timedelta(days=1)
+                elif row['dateRelative_final'] == -1 and int(row['heure_de_reference'])<0:
+                    return date_obj - timedelta(days=1)
+                else:
+                    return date_obj
         except Exception as e:
             return None
 
