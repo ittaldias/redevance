@@ -88,7 +88,7 @@ def test_dateRelative_final_HeurePremiereBalise_final_veille():
 def test_dateRelative_realise_jourdarchive():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
     dt = date_obj
-    dt64 = output.loc[output['callSign_prevu'] == 'EFW2865', 'date_de_reference'].values[0]
+    dt64 = output.loc[output['callSign_prevu'] == 'AFR473', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
     if pd.notna(dt64):
