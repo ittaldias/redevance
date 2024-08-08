@@ -164,7 +164,7 @@ def test_dateRelative_final_lendemain():
 def test_dateRelative_final_veille():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
     dt = date_obj  - timedelta(days=1)
-    dt64 = output.loc[output['callSign_prevu'] == 'SWORD32') & (output['IFPL_prevu'] == 'AA47710387','date_de_reference'].values[0]
+    dt64 = output.loc[(output['callSign_prevu'] == 'SWORD32') & (output['IFPL_prevu'] == 'AA47710387'),'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
     if pd.notna(dt64):
