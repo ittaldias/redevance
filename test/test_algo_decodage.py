@@ -4,6 +4,7 @@ import pytest
 from datetime import datetime, timedelta
 from src.stan import read_and_process_file, convert_and_calculate
 #TEST GIT
+
 output, date_obj = read_and_process_file("data/RDVC-20230522.pln")
 output = convert_and_calculate(output, date_obj)
 date_str = '22-05-2023'
