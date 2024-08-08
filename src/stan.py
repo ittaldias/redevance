@@ -216,7 +216,7 @@ def convert_and_calculate(df, date_obj):
                 if row['dateRelative_realise'] == 0:
                     return date_obj
                 elif row['dateRelative_realise'] == 1:
-                    return date_obj - timedelta(days=1)
+                    return date_obj + timedelta(days=1)
                 elif row['dateRelative_realise'] == -1 and int(row['heure_de_reference'])<0:
                     return date_obj - timedelta(days=1)
                 else:
@@ -225,7 +225,7 @@ def convert_and_calculate(df, date_obj):
                 if row['dateRelative_final'] == 0:
                     return date_obj
                 elif row['dateRelative_final'] == 1:
-                    return date_obj - timedelta(days=1)
+                    return date_obj + timedelta(days=1)
                 elif row['dateRelative_final'] == -1 and int(row['heure_de_reference'])<0:
                     return date_obj - timedelta(days=1)
                 else:
