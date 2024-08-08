@@ -102,21 +102,23 @@ def test_dateRelative_realise_jourdarchive():
     
     # Assert statements
     assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
-def test_dateRelative_realise_lendemain():
-    date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-    dt = date_obj + timedelta(days=1)
-    dt64 = output.loc[output['callSign_prevu'] == '160B', 'date_de_reference'].values[0]
+
+#Pas d'exemple pour cette journée de ['dateRelative_realise'] == 1
+# def test_dateRelative_realise_lendemain():
+#     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
+#     dt = date_obj + timedelta(days=1)
+#     dt64 = output.loc[output['callSign_prevu'] == '160B', 'date_de_reference'].values[0]
     
-    # Convert dt64 to datetime
-    if pd.notna(dt64):
-     dt64_as_dt = pd.to_datetime(dt64)
-    # Now dt64_as_dt should be a valid datetime object
-    else:
-    # Handle the case where dt64 is None or NaN
-     dt64_as_dt = date_obj
+#     # Convert dt64 to datetime
+#     if pd.notna(dt64):
+#      dt64_as_dt = pd.to_datetime(dt64)
+#     # Now dt64_as_dt should be a valid datetime object
+#     else:
+#     # Handle the case where dt64 is None or NaN
+#      dt64_as_dt = date_obj
     
-    # Convert dt to datetime64
-    assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
+#     # Convert dt to datetime64
+#     assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
 def test_dateRelative_realise_veille():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
     dt = date_obj - timedelta(days=1)
@@ -162,7 +164,7 @@ def test_dateRelative_final_lendemain():
 def test_dateRelative_final_veille():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
     dt = date_obj  - timedelta(days=1)
-    dt64 = output.loc[output['callSign_prevu'] == 'SWORD32', 'date_de_reference'].values[0]
+    dt64 = output.loc[output['callSign_prevu'] == 'SWORD32') & (output['IFPL_prevu'] == 'AA47710387','date_de_reference'].values[0]
     
     # Convert dt64 to datetime
     if pd.notna(dt64):
