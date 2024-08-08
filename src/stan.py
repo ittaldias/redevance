@@ -191,20 +191,16 @@ def convert_and_calculate(df, date_obj):
 
     def calcul_HeureDeReference(row):
         try:
-            if not pd.isna(row['dateRelative_realise']):
-                if not pd.isna(row['HeurePremiereBaliseActive_realise']):
-                    return int(row['HeurePremiereBaliseActive_realise']) + (1440 if row['dateRelative_realise'] == -1 else -1440 if row['dateRelative_realise'] == 1 else 0)
-                elif not pd.isna(row['HeurePremiereBaliseActive_final']):
-                    return int(row['HeurePremiereBaliseActive_final']) + (1440 if row['dateRelative_realise'] == -1 else -1440 if row['dateRelative_realise'] == 1 else 0)
+            if not pd.isna(row['dateRelative_realise']) and not pd.isnull(row['dateRelative_realise']):
+                if not pd.isna(row['HeurePremiereBaliseActive_realise']) and int(row['HeurePremiereBaliseActive_realise']) != 0:
+                    return int(row['HeurePremiereBaliseActive_realise']) + (-1440 if row['dateRelative_realise'] == -1 else 1440 if row['dateRelative_realise'] == 1 else 0)
                 elif not pd.isna(row['HeurePremiereBalise_final']):
-                    return int(row['HeurePremiereBalise_final']) + (1440 if row['dateRelative_realise'] == -1 else -1440 if row['dateRelative_realise'] == 1 else 0)
+                    return int(row['HeurePremiereBalise_final']) + (-1440 if row['dateRelative_realise'] == -1 else 1440 if row['dateRelative_realise'] == 1 else 0)
             elif not pd.isna(row['dateRelative_final']):
-                if not pd.isna(row['HeurePremiereBaliseActive_realise']):
-                    return int(row['HeurePremiereBaliseActive_realise']) + (1440 if row['dateRelative_final'] == -1 else -1440 if row['dateRelative_final'] == 1 else 0)
-                elif not pd.isna(row['HeurePremiereBaliseActive_final']):
-                    return int(row['HeurePremiereBaliseActive_final']) + (1440 if row['dateRelative_final'] == -1 else -1440 if row['dateRelative_final'] == 1 else 0)
+                if not pd.isna(row['HeurePremiereBaliseActive_final']) and int(row['HeurePremiereBaliseActive_final']) != 0:
+                    return int(row['HeurePremiereBaliseActive_final']) + (-1440 if row['dateRelative_final'] == -1 else 1440 if row['dateRelative_final'] == 1 else 0)
                 elif not pd.isna(row['HeurePremiereBalise_final']):
-                    return int(row['HeurePremiereBalise_final']) + (1440 if row['dateRelative_final'] == -1 else -1440 if row['dateRelative_final'] == 1 else 0)
+                    return int(row['HeurePremiereBalise_final']) + (-1440 if row['dateRelative_final'] == -1 else 1440 if row['dateRelative_final'] == 1 else 0)
         except Exception:
             return None
 
