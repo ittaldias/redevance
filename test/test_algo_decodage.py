@@ -134,7 +134,7 @@ def test_dateRelative_realise_veille():
 def test_dateRelative_final_jourdarchive():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
     dt = date_obj
-    dt64 = output.loc[output['callSign_prevu'] == 'EZY37KC', 'date_de_reference'].values[0]
+    dt64 = output.loc[output['callSign_prevu'] == 'THY90F', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
     if pd.notna(dt64):
@@ -148,7 +148,7 @@ def test_dateRelative_final_jourdarchive():
 def test_dateRelative_final_lendemain():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
     dt = date_obj + timedelta(days=1)
-    dt64 = output.loc[output['callSign_prevu'] == 'AFR903A', 'date_de_reference'].values[0]
+    dt64 = output.loc[output['callSign_prevu'] == 'EZY37KC', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
     if pd.notna(dt64):
@@ -162,7 +162,7 @@ def test_dateRelative_final_lendemain():
 def test_dateRelative_final_veille():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
     dt = date_obj  - timedelta(days=1)
-    dt64 = output.loc[output['callSign_prevu'] == 'SWR9G', 'date_de_reference'].values[0]
+    dt64 = output.loc[output['callSign_prevu'] == 'SWORD32', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
     if pd.notna(dt64):
