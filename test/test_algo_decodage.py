@@ -87,7 +87,7 @@ def test_dateRelative_final_HeurePremiereBalise_final_veille():
     
 def test_dateRelative_realise_jourdarchive():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-    dt = date_obj + timedelta(days=1)
+    dt = date_obj
     dt64 = output.loc[output['callSign_prevu'] == 'EFW2865', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
@@ -104,7 +104,7 @@ def test_dateRelative_realise_jourdarchive():
     assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
 def test_dateRelative_realise_lendemain():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-    dt = date_obj
+    dt = date_obj + timedelta(days=1)
     dt64 = output.loc[output['callSign_prevu'] == '160B', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
@@ -119,7 +119,7 @@ def test_dateRelative_realise_lendemain():
     assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
 def test_dateRelative_realise_veille():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-    dt = date_obj + timedelta(days=1)
+    dt = date_obj - timedelta(days=1)
     dt64 = output.loc[output['callSign_prevu'] == 'EFW2865', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
@@ -133,7 +133,7 @@ def test_dateRelative_realise_veille():
     assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
 def test_dateRelative_final_jourdarchive():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-    dt = date_obj - timedelta(days=1)
+    dt = date_obj
     dt64 = output.loc[output['callSign_prevu'] == 'EZY37KC', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
@@ -147,7 +147,7 @@ def test_dateRelative_final_jourdarchive():
     assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
 def test_dateRelative_final_lendemain():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-    dt = date_obj
+    dt = date_obj + timedelta(days=1)
     dt64 = output.loc[output['callSign_prevu'] == 'AFR903A', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
@@ -161,7 +161,7 @@ def test_dateRelative_final_lendemain():
     assert dt == dt64_as_dt, f"Expected {dt} to equal {dt64_as_dt}"
 def test_dateRelative_final_veille():
     date_obj = datetime.strptime(date_str, "%d-%m-%Y")
-    dt = date_obj
+    dt = date_obj  - timedelta(days=1)
     dt64 = output.loc[output['callSign_prevu'] == 'SWR9G', 'date_de_reference'].values[0]
     
     # Convert dt64 to datetime
